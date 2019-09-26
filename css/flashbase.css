@@ -1,0 +1,76 @@
+.navbar-brand.navbar-bg {
+  position: absolute;
+  left: 0;
+  padding: 3px 15px 10px;
+  width: auto;
+  height: 62px;
+  line-height: 62px;
+}
+
+#logo {
+  max-height: 50px;
+}
+
+@media only screen and (min-width: 1170px) {
+  .cd-hero-slider .cd-full-width, .cd-hero-slider .cd-half-width {
+      padding-top: 250px;
+  }
+
+  #logo {
+    height: 50px;
+  }
+}
+
+@media (max-width: 991px) {
+  .header .navbar {
+      padding: 7px 0;
+  }
+
+  .navbar-brand.navbar-bg {
+    height: auto;
+  }
+
+  #logo {
+    max-height: 30px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .navbar-brand.navbar-bg {
+    height: auto;
+  }
+
+  .cd-hero-slider .cd-full-width, .cd-hero-slider .cd-half-width {
+    padding-top: 150px;
+  }
+
+  #logo {
+    height: 30px;
+  }
+}
+
+
+figure.effect-oscar {
+  background: #000000;
+}
+
+figure.effect-oscar:hover img {
+  opacity: initial;
+}
+
+#usecases {
+  background: #F5F5F5;
+}
+
+#usecases img {
+  height: 280px;
+}
+
+#usecases .isotope-item {
+  padding-right: 10px;
+}
+
+
+#copyright .footer-social a {
+  margin: 0 5px 0 5px;
+}
