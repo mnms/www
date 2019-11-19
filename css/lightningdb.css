@@ -7,6 +7,10 @@
   line-height: 62px;
 }
 
+.navbar-brand {
+  background: #000;
+}
+
 #logo {
   max-height: 50px;
 }
