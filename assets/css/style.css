@@ -123,6 +123,10 @@ Helper CSS
   color: #fff;
 }
 
+.icon-yellow {
+  color: #ffc000;
+}
+
 /*---------------------
 Commom elements
 -----------------------*/
@@ -946,6 +950,7 @@ Video Section
   border-radius: 50%;
   color: #EFEFEF;
   background: rgba(255, 255, 255, 0.50);
+  /* background: rgba(255, 176, 0, 0.7); */
 }
 
 /* ----------------
@@ -1283,6 +1288,11 @@ About Page
 
 .team-member .member-info p {
   margin-bottom: 20px;
+}
+
+.team-member .member-info a {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .team-member .member-info .site-btn {
