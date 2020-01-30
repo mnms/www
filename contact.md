@@ -9,7 +9,7 @@ permalink: /contact
     <div class="row">
       <div class="col-lg-7">
         <h2>Contact</h2>
-        <p>Please let us know if you have any questions or advice</p>
+        <!-- <p></p> -->
         <!-- <a href="" class="site-btn">Say hello</a> -->
       </div>
     </div>
@@ -24,7 +24,7 @@ permalink: /contact
       <div class="col-lg-4">
         <div class="contact-text">
           <h2>Get in Touch</h2>
-          <p>We're open to collaboration. Anyone who is interested in Lightning DB would like to contact us.</p>
+          <p>We're open to collaboration. Please let us know if you have any questions or advice.</p>
           <div class="header-info-box">
             <div class="hib-icon">
               <i class="fa fa-2x fa-phone icon-yellow"></i>

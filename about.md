@@ -9,7 +9,7 @@ permalink: /about
     <div class="row">
       <div class="col-lg-7">
         <h2>About us</h2>
-        <p>Blah Blah</p>
+        <!-- <p></p> -->
       </div>
     </div>
   </div>
@@ -86,7 +86,7 @@ permalink: /about
       <div class="col-lg-3 col-sm-6">
         <div class="milestone">
           <div class="milestone-icon">
-            <img src="/assets/img/icons/Developer.png" alt="">
+            <img src="/assets/img/icons/Software Engineer.png" alt="">
           </div>
           <div class="milestone-text">
             <span>Emploees</span>
@@ -105,7 +105,7 @@ permalink: /about
   <div class="container">
     <div class="team-text">
       <h2>Our Amazing Team</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est. Nam ornare ipsum ac accumsan auctor. Donec consequat arcu et commodo interdum. Vivamus posuere lorem lacus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est.</p>
+      <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est. Nam ornare ipsum ac accumsan auctor. Donec consequat arcu et commodo interdum. Vivamus posuere lorem lacus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est.</p> -->
     </div>
     <div class="row">
       <div class="col-md-4">
@@ -146,7 +146,7 @@ permalink: /about
           <img src="/assets/img/team/junghwan.png" alt="">
           <div class="member-info">
             <h3>Junghwan Park</h3>
-            <p>Developer</p>
+            <p>Software Engineer</p>
             <a href="https://github.com/9bow"><i class="fa fa-2x fa-github"></i></a>
             <a href="https://www.linkedin.com/in/reservepark/"><i class="fa fa-2x fa-linkedin"></i></a>
           </div>
@@ -157,7 +157,7 @@ permalink: /about
           <img src="/assets/img/team/youjun.png" alt="">
           <div class="member-info">
             <h3>YouJun Go</h3>
-            <p>Developer</p>
+            <p>Software Engineer</p>
             <a href="https://github.com/steviego"><i class="fa fa-2x fa-github"></i></a>
             <a href="https://www.linkedin.com/in/youjun-go-976503165/?originalSubdomain=kr"><i class="fa fa-2x fa-linkedin"></i></a>
           </div>
@@ -168,7 +168,7 @@ permalink: /about
           <img src="/assets/img/team/moohyeon.png" alt="">
           <div class="member-info">
             <h3>Moohyeon Nam</h3>
-            <p>Developer, Ph.D</p>
+            <p>Software Engineer, Ph.D</p>
             <a href="https://github.com/moohnam"><i class="fa fa-2x fa-github"></i></a>
             <a href="https://www.linkedin.com/in/moohyeon-nam-97721711b/"><i class="fa fa-2x fa-linkedin"></i></a>
           </div>
