@@ -67,6 +67,10 @@ img {
   max-width: 100%;
 }
 
+img.rounded-corners {
+  border-radius: 30px;
+}
+
 input:focus,
 select:focus,
 button:focus,
@@ -125,6 +129,11 @@ Helper CSS
 
 .icon-yellow {
   color: #ffc000;
+}
+
+.break-all {
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 /*---------------------
@@ -1131,7 +1140,7 @@ Other Pages
 -------------------*/
 
 .page-top-section {
-  height: 366px;
+  height: 250px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1141,14 +1150,15 @@ Other Pages
 }
 
 .page-top-section h2 {
-  font-weight: 300;
+  font-weight: 400;
   color: #fff;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .page-top-section p {
   color: #fff;
   margin-bottom: 35px;
+  margin-left: 5px;
 }
 
 /* ---------------
