@@ -57,3 +57,4 @@ exclude:
   - .sass-cache/
   - .gitignore
   - docs/
+  - README.md
