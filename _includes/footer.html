@@ -1,0 +1,70 @@
+<!-- Footer section -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="footer-widget about-widget">
+          <img src="{{ site.baseurl }}assets/img/logo-light.png" alt="">
+          <div class="footer-social">
+            <a href="https://github.com/mnms"><i class="fa fa-github"></i></a>
+            <a href="https://www.youtube.com/channel/UCj0aAcbjw0O-vVIcPMneNSw"><i class="fa fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-7">
+        <div class="footer-widget">
+          <h2 class="fw-title">Contact Us</h2>
+          <div class="footer-info-box">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <img src="{{ site.baseurl }}assets/img/icons/phone.png" alt="" class="">
+                </div>
+                <div class="fib-text">
+                  <p>{{ site.contact.tel }}<br>{{ site.contact.email }}</p>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <img src="{{ site.baseurl }}assets/img/icons/map-marker.png" alt="" class="">
+                </div>
+                <div class="fib-text">
+                  <p>{{ site.contact.addr1 }}<br>{{ site.contact.addr2 }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-buttom">
+    <div class="container">
+    <div class="row">
+      <div class="col-lg-4 order-2 order-lg-1 p-0">
+        <div class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved <br />This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></div>
+      </div>
+      <div class="col-lg-7 order-1 order-lg-2 p-0">
+        <ul class="footer-menu">
+          {% for item in site.menu %}
+          <li {% if page.url == item.url %}class="active"{% endif %}><a href="{{ item.url }}">{{ item.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</footer>
+<!-- Footer section end -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-152587413-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-152587413-2');
+</script>

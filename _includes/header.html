@@ -1,0 +1,51 @@
+<!-- Header section  -->
+<header class="header-section clearfix">
+  <!-- <div class="header-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-6 text-md-right">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="site-navbar">
+    <!-- Logo -->
+    <a href="index.html" class="site-logo">
+      <img src="/assets/img/logo.png" alt="">
+    </a>
+    <div class="header-right">
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <img src="/assets/img/icons/phone.png" alt="" class="">
+        </div>
+        <div class="hib-text">
+          <h6>{{ site.contact.tel }}</h6>
+          <p>{{ site.contact.email }}</p>
+        </div>
+      </div>
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <img src="/assets/img/icons/map-marker.png" alt="" class="">
+        </div>
+        <div class="hib-text">
+          <h6>{{ site.contact.addr1 }}</h6>
+          <p>{{ site.contact.addr2 }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Menu -->
+    <nav class="site-nav-menu">
+      <ul>
+{% for item in site.menu %}
+        <li{% if page.url == item.url %} class="active"{% endif %}><a href="{{ item.url }}">{{ item.title }}</a></li>
+{% endfor %}
+      </ul>
+    </nav>
+
+  </div>
+</header>
+<!-- Header section end  -->

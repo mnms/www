@@ -1,0 +1,59 @@
+# general
+title: Lightning DB - DRAM/SSD optimized Realtime In-memory DBMS
+email: lightningdb@sktelecom.com
+description: >-
+  LightningDB - DRAM/SSD optimized Realtime In-memory DBMS. It uses customized redis & rocksDB, Apache Spark as well.
+keywords: dbms, realtime, olap, dram optimized, nvme optimzed, ssd optimized
+baseurl: "/"
+autho: 9bow
+url: "https://ligtningdb.io"
+url_docs: "https://docs.lightningdb.io"
+twitter_username:
+github_username:
+
+# contact info
+contact:
+  tel: +82-2-6100-0114
+  email: lightningdb@sktelecom.com
+  addr1: 8F, 264, PangyoRo, BundangGu
+  addr2: SeongnamSi, GyeonggiDo, Korea
+  cta: We provide speed and trust to business.
+
+# menu info
+menu:
+  - title: Home
+    url: /
+  - title: About us
+    url: /about
+  # - title: Solutions
+  #   url: /solutions
+  - title: Docs
+    url: https://docs.lightningdb.io
+  - title: Contact
+    url: /contact
+
+category_dir: category/
+tag_dir: tag/
+
+# build
+markdown: kramdown
+plugins:
+#   - jekyll-feed
+#   - jekyll-paginate
+# paginate: 4
+# paginate_path: blog/page:num
+
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - .sass-cache/
+  - .gitignore
+  - docs/
