@@ -55,7 +55,7 @@ layout: main
               </div>
               <h5>Real-time</h5>
             </div>
-            <p>Real-time ingestion (500K rows/sec/node) and query with extreme partitioning (1B / node)</p>
+            <p>Real-time ingestion (500,000 rows/sec/node) and query with extreme partitioning (1B / node)</p>
           </div>
         </div>
         <div class="col-lg-3 col-md-6">

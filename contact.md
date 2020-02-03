@@ -27,16 +27,16 @@ permalink: /contact
           <p>We're open to collaboration. Please let us know if you have any questions or advice.</p>
           <div class="header-info-box">
             <div class="hib-icon">
-              <i class="fa fa-2x fa-phone icon-yellow"></i>
+              <i class="fa fa-2x fa-envelope icon-colored"></i>
             </div>
             <div class="hib-text">
-              <h6>{{ site.contact.tel }}</h6>
-              <p>{{ site.contact.email }}</p>
+              <h6>{{ site.contact.email }}</h6>
+              <p>&nbsp;</p>
             </div>
           </div>
           <div class="header-info-box">
             <div class="hib-icon">
-              <i class="fa fa-3x fa-map-marker icon-yellow"></i>
+              <i class="fa fa-3x fa-map-marker icon-colored"></i>
             </div>
             <div class="hib-text">
               <h6>{{ site.contact.addr1 }}</h6>
@@ -45,7 +45,7 @@ permalink: /contact
           </div>
           <div class="header-info-box">
             <div class="hib-icon">
-              <i class="fa fa-2x fa-subway icon-yellow"></i>
+              <i class="fa fa-2x fa-subway icon-colored"></i>
             </div>
             <div class="hib-text">
               <h6>Pangyo Station(Exit 4) and take a bus</h6>
