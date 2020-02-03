@@ -37,7 +37,7 @@ tag_dir: tag/
 
 # build
 markdown: kramdown
-plugins:
+# plugins:
 #   - jekyll-feed
 #   - jekyll-paginate
 # paginate: 4
