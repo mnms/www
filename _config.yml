@@ -23,14 +23,19 @@ contact:
 menu:
   - title: Home
     url: /
+    target:
   - title: About us
     url: /about
+    target:
   # - title: Solutions
   #   url: /solutions
+  #   target:
   - title: Docs
     url: https://docs.lightningdb.io
+    target: _blank
   - title: Contact
     url: /contact
+    target:
 
 category_dir: category/
 tag_dir: tag/
