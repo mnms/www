@@ -110,7 +110,7 @@ permalink: /about
     <div class="row">
       <div class="col-md-4">
         <div class="team-member">
-          <img src="/assets/img/team/hongchan.png" alt="">
+          <a href="#"><img src="/assets/img/team/hongchan.png" alt=""></a>
           <div class="member-info">
             <h3>Hongchan Roh</h3>
             <p>Team Leader, Ph.D</p>
@@ -121,7 +121,7 @@ permalink: /about
       </div>
       <div class="col-md-4">
         <div class="team-member">
-          <img src="/assets/img/team/sungho.png" alt="">
+          <a href="#"><img src="/assets/img/team/sungho.png" alt=""></a>
           <div class="member-info">
             <h3>Sungho Kim</h3>
             <p>Project Manager</p>
@@ -132,7 +132,7 @@ permalink: /about
       </div>
       <div class="col-md-4">
         <div class="team-member">
-          <img src="/assets/img/team/dooyoung.png" alt="">
+          <a href="#"><img src="/assets/img/team/dooyoung.png" alt=""></a>
           <div class="member-info">
             <h3>Dooyoung Hwang</h3>
             <p>Tech. Leader</p>
@@ -143,7 +143,7 @@ permalink: /about
       </div>
       <div class="col-md-4">
         <div class="team-member">
-          <img src="/assets/img/team/junghwan.png" alt="">
+          <a href="#"><img src="/assets/img/team/junghwan.png" alt=""></a>
           <div class="member-info">
             <h3>Junghwan Park</h3>
             <p>Software Engineer</p>
@@ -154,7 +154,7 @@ permalink: /about
       </div>
       <div class="col-md-4">
         <div class="team-member">
-          <img src="/assets/img/team/youjun.png" alt="">
+          <a href="#"><img src="/assets/img/team/youjun.png" alt=""></a>
           <div class="member-info">
             <h3>YouJun Go</h3>
             <p>Software Engineer</p>
@@ -165,7 +165,7 @@ permalink: /about
       </div>
       <div class="col-md-4">
         <div class="team-member">
-          <img src="/assets/img/team/moohyeon.png" alt="">
+          <a href="#"><img src="/assets/img/team/moohyeon.png" alt=""></a>
           <div class="member-info">
             <h3>Moohyeon Nam</h3>
             <p>Software Engineer, Ph.D</p>
