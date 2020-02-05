@@ -1280,9 +1280,20 @@ About Page
   transition: all 0.3s;
 }
 
-.team-member img {
+.team-member a img {
   position: relative;
   z-index: 2;
+  width: auto;
+  margin: 0 auto;
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.team-member a:hover img {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
 }
 
 .team-member .member-info {
