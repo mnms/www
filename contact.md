@@ -49,7 +49,7 @@ permalink: /contact
             </div>
             <div class="hib-text">
               <h6>Pangyo Station(Exit 4) and take a bus</h6>
-              <p>602-1, 602-2, 71, 73 75 (Innovalley Station)</p>
+              <p>602-1, 602-2, 71, 73, 75 (Innovalley Station)</p>
             </div>
           </div>
         </div>
