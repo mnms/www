@@ -1,4 +1,4 @@
-# general
+# site info
 title: Lightning DB - DRAM/SSD optimized Realtime In-memory DBMS
 email: lightningdb@sktelecom.com
 description: >-
@@ -8,8 +8,9 @@ baseurl: "/"
 autho: 9bow
 url: "https://ligtningdb.io"
 url_docs: "https://docs.lightningdb.io"
-twitter_username:
-github_username:
+github_username: mnms
+encoding: UTF-8
+lang: en-US
 
 # contact info
 contact:
@@ -30,6 +31,9 @@ menu:
   # - title: Solutions
   #   url: /solutions
   #   target:
+  - title: Blog
+    url: /blog
+    target:
   - title: Docs
     url: https://docs.lightningdb.io
     target: _blank
@@ -37,16 +41,60 @@ menu:
     url: /contact
     target:
 
-category_dir: category/
-tag_dir: tag/
 
-# build
+# jekyll build option
 markdown: kramdown
-# plugins:
-#   - jekyll-feed
-#   - jekyll-paginate
-# paginate: 4
-# paginate_path: blog/page:num
+# kramdown:
+#   syntax_highlighter: rouge
+#   syntax_highlighter_opts:
+#     css_class: 'highlight'
+#     span:
+#       line_numbers: false
+#     block:
+#       line_numbers: true
+#       start_line: 1
+kramdown:
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+plugins:
+  - jekyll-feed
+  - jekyll-paginate-v2
+permalink: /blog/:year/:month/:title.html
+category_dir: /blog/category/
+# tag_dir: /tag/
+excerpt_separator: <!-- more --> # Marks end of excerpt in posts
+pagination:
+  enabled: true # enable pagination plugin
+  debug: false # debug mode
+  sort_reverse: true # latest first
+  collection: 'posts' # collect posts
+  per_page: 2 # blog items per page
+  # The permalink structure for the paginated pages (this can be any level deep)
+  permalink: '/page/:num/' # Pages are html files, linked jekyll extensionless permalink style.
+  # Optional the title format for the paginated pages (supports :title for original page title, :num for pagination page number, :max for total number of pages)
+  title: ':title - page :num'
+  # Limit how many pagenated pages to create (default: 0, means all)
+  limit: 0
+autopages:
+  enabled: true # enable autopages option (included in pagenation plugin)
+  categories:
+    # Optional, the list of layouts that should be processed for every category found in the site
+    layouts:
+      - 'blog-list.html'
+    # Optional, the title that each category paginate page should get (:cat is replaced by the Category name)
+    title: 'Posts in category :cat'
+    # Optional, the permalink for the  pagination page (:cat is replaced),
+    # the pagination permalink path is then appended to this permalink structure
+    permalink: '/blog/category/:cat'
+  collections:
+    layouts:
+      - 'blog-list.html'
+    permalink: '/blog/collection/:coll'
+  tags:
+    layouts:
+      - 'blog-list.html'
+    permalink: '/blog/tag/:tag'
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list

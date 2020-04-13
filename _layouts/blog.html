@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include /head.html %}
+<link rel="stylesheet" href="/assets/css/style-blog.css"/>
+<link rel="stylesheet" href="/assets/css/code-syntax-theme.css"/>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_CHTML"></script>
+<script type="text/javascript" src="/assets/js/mermaid/mermaid.min.js"></script>
+<script type="text/javascript">mermaid.initialize({startOnLoad:true});</script>
+<body>
+{% include /header.html %}
+<!-- Page top section  -->
+<section class="page-top-section set-bg" data-setbg="/assets/img/page-top-bg/blog.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <h2>Blog</h2>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page top section end  -->
+
+<!-- Blog page section -->
+<section class="blog-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 blog-page">
+        <h2>{{ page.title }}</h2>
+        <div class="blog-meta">
+          <i class="fa fa-calendar"></i> <span class="meta-date">{{ page.date | date: '%B %d, %Y' }}</span>&nbsp;
+          <i class="fa fa-user"></i> <span class="meta-author">{{ page.author }}</span>
+        </div>
+        <div class="blog-content">
+{{ content }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Blog page section end -->
+
+<!-- Call to action section  -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 d-flex align-items-center">
+        <h2>{{ site.contact.cta }}</h2>
+      </div>
+      <div class="col-lg-3 text-lg-right" >
+        <a href="/contact" class="site-btn sb-dark">contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Call to action section end  -->
+
+{% include /footer.html %}
+{% include /scripts.html %}
+<!-- <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

@@ -1613,9 +1613,9 @@ Blog Page
 
 .blog-post .blog-meta {
   display: inline-block;
-  font-size: 12px;
+  font-size: 14px;
   color: #718090;
-  padding-left: 22px;
+  padding-left: 5px;
   position: relative;
   padding-right: 12px;
   margin-right: 6px;
@@ -1647,21 +1647,18 @@ Blog Page
   height: 18px;
   left: 0;
   top: 0;
-  background-image: url("../img/blog/blog-icons.png");
-  background-repeat: no-repeat;
-  background-size: auto;
 }
 
-.blog-post .blog-meta.meta-author:after {
-  background-position: center left -2px;
+.blog-post .blog-meta .meta-date {
+  padding-right: 10px;
 }
 
-.blog-post .blog-meta.meta-cata:after {
-  background-position: center left -24px;
+.blog-post .blog-meta .meta-author  {
+  padding-right: 10px;
 }
 
-.blog-post .blog-meta.meta-comment:after {
-  background-position: center left -48px;
+.blog-post .blog-meta .meta-category {
+  padding-right: 10px;
 }
 
 .blog-post .blog-meta a {
@@ -1669,18 +1666,50 @@ Blog Page
 }
 
 .blog-post h2 {
-  font-weight: 300;
-  font-size: 36px;
-  margin-bottom: 30px;
+  font-weight: 600;
+  font-size: 32px;
+  margin-bottom: 10px;
 }
 
 .blog-post p {
   margin-bottom: 30px;
 }
 
-.blog-post .read-more {
-  min-width: 138px;
+.blog-post .open-link {
+  min-width: 130px;
+  padding: 13px 15px 10px 15px;
+  background: rgb(74, 112, 207);
 }
+
+.blog-post .read-more {
+  min-width: 130px;
+  padding: 13px 15px 10px 15px;
+}
+
+.blog-page h2 {
+  font-weight: 600;
+  font-size: 36px;
+  margin-bottom: 30px;
+}
+
+.blog-page .blog-meta {
+  position: relative;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 500;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+}
+
+.blog-page .blog-content {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+/*
+// Refer style-blog.css for blog-content styles
+*/
 
 .site-pagination a {
   display: inline-block;
@@ -1698,7 +1727,25 @@ Blog Page
   padding: 13px 15px;
 }
 
-.site-pagination a.next {
+.site-pagination ul {
+  text-align: center;
+  list-style: none;
+}
+
+.site-pagination ul li {
+  display: inline;
+  border: 1px solid black;
+  padding: 10px;
+  margin: 5px;
+}
+
+.site-pagination li.newer {
+  float: left;
+  color: #718090;
+}
+
+.site-pagination li.older {
+  float: right;
   color: #718090;
 }
 

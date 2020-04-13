@@ -1,0 +1,101 @@
+---
+layout: page
+permalink: /blog
+pagination:
+  enabled: true
+---
+
+<!-- Page top section  -->
+<section class="page-top-section set-bg" data-setbg="/assets/img/page-top-bg/blog.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <h2>Blog</h2>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page top section end  -->
+
+<!-- Blog list section  -->
+<section class="blog-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 sidebar order-2 order-lg-1">
+        <!-- <div class="sb-widget">
+          <form class="sb-search">
+            <input type="text" placeholder="Search">
+            <button><i class="fa fa-search"></i></button>
+          </form>
+        </div> -->
+        <div class="sb-widget">
+          <h2 class="sb-title">Categories</h2>
+          <ul>
+{% for item in site.categories %}
+  {% assign category = item | first %}
+            <li><a href="/blog/category/{{ category | slugify }}">{{ category }}</a></li>
+{% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-9 order-1 order-lg-2">
+{% for post in paginator.posts %}
+        <div class="blog-post">
+  {% if post.link  %}
+          <a href="{{ post.link }}" target="_blank"><h2>{{ post.title }}</h2></a>
+  {% else %}
+          <a href="{{ post.url }}"><h2>{{ post.title }}</h2></a>
+  {% endif %}
+          <div class="blog-metas">
+            <div class="blog-meta">
+              <i class="fa fa-calendar"></i> <span class="meta-date">{{ post.date | date: '%B %d, %Y' }}</span>&nbsp;
+              <i class="fa fa-user"></i> <span class="meta-author">{{ post.author }}</span>
+              <i class="fa fa-inbox"></i> <span class="meta-category"><a href="/blog/category/{{ post.category | slugify }}">{{ post.category }}</a></span>
+            </div>
+          </div>
+          <p>{{ post.excerpt }}</p>
+          <!-- <a href="{{ post.url }}" class="site-btn btn btn-xs read-more">read more</a> -->
+  {% if post.link  %}
+          <a href="{{ post.link }}" target="_blank"><button type="button" class="site-btn btn open-link">open link</button></a>
+  {% else %}
+          <a href="{{ post.url }}"><button type="button" class="site-btn btn read-more">read more</button></a>
+  {% endif %}
+        </div>
+{% endfor %}
+        <div class="site-pagination">
+{% if paginator.total_pages > 1 %}
+          <ul>
+  {% if paginator.previous_page %}
+            <li class="newer" >
+              <a href="{{ paginator.previous_page_path | prepend: site.url }}">&larr; Newer Posts</a>
+            </li>
+  {% endif %}
+  {% if paginator.next_page %}
+            <li class="older" >
+              <a href="{{ paginator.next_page_path | prepend: site.url }}">Older Posts &rarr;</a>
+            </li>
+  {% endif %}
+          </ul>
+{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Blog list section end  -->
+
+<!-- Call to action section  -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 d-flex align-items-center">
+        <h2>{{ site.contact.cta }}</h2>
+      </div>
+      <div class="col-lg-3 text-lg-right" >
+        <a href="/contact" class="site-btn sb-dark">contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Call to action section end  -->
