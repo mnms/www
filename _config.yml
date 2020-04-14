@@ -69,7 +69,7 @@ pagination:
   debug: false # debug mode
   sort_reverse: true # latest first
   collection: 'posts' # collect posts
-  per_page: 2 # blog items per page
+  per_page: 5 # blog items per page
   # The permalink structure for the paginated pages (this can be any level deep)
   permalink: '/page/:num/' # Pages are html files, linked jekyll extensionless permalink style.
   # Optional the title format for the paginated pages (supports :title for original page title, :num for pagination page number, :max for total number of pages)

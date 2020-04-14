@@ -52,7 +52,7 @@
   ---
 ```
 
-### Contents
+## Contents
 
 * Typically you could write posts in Markdown, HTML is also supported.
   * For the Markdown syntax, see [here](https://guides.github.com/features/mastering-markdown/).
