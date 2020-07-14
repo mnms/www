@@ -170,15 +170,22 @@ layout: main
       <h2>Lightning DB in public (videos)</h2>
     </div>
     <div class="row">
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="video-box set-bg" data-setbg="/assets/img/video-box-1.png">
           <a href="https://www.youtube.com/watch?v=dk6U1XeWpho" class="video-popup">
             <i class="fa fa-play"></i>
           </a>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="video-box set-bg" data-setbg="/assets/img/video-box-2.png">
+          <a href="https://www.youtube.com/watch?v=Uz-IklqI3MQ" class="video-popup">
+            <i class="fa fa-play"></i>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="video-box set-bg" data-setbg="/assets/img/video-box-3.png">
           <a href="https://www.youtube.com/watch?v=YiDQnIjG4AU" class="video-popup">
             <i class="fa fa-play"></i>
           </a>
