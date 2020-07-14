@@ -41,9 +41,7 @@
     <nav class="site-nav-menu">
       <ul>
 {% for item in site.menu %}
-  {% if item.title != 'Blog' %}
         <li{% if page.url == item.url %} class="active"{% endif %}><a href="{{ item.url }}"{% if item.target %} target='{{ item.target }}'{% endif %}>{{ item.title }}</a></li>
-  {% endif %}
 {% endfor %}
       </ul>
     </nav>

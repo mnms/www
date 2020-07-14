@@ -49,9 +49,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
       <div class="col-lg-7 order-1 order-lg-2 p-0">
         <ul class="footer-menu">
           {% for item in site.menu %}
-            {% if item.title != 'Blog' %}
           <li {% if page.url == item.url %}class="active"{% endif %}><a href="{{ item.url }}">{{ item.title }}</a></li>
-            {% endif %}
           {% endfor %}
         </ul>
       </div>
