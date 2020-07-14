@@ -109,6 +109,7 @@ Arrow에 IPC protocol이나 File Structure는 결국 FlatBuffers Schema로 정�
     - \<metadata_flatbuffer\>
         - [https://github.com/apache/arrow/blob/master/format/Message.fbs](https://github.com/apache/arrow/blob/master/format/Message.fbs)
         - Message Version & Type
+      
       ```cpp
       union MessageHeader {
         Schema, DictionaryBatch, RecordBatch, Tensor, SparseTensor
@@ -121,6 +122,7 @@ Arrow에 IPC protocol이나 File Structure는 결국 FlatBuffers Schema로 정�
         custom_metadata: [ KeyValue ];
       }
       ```
+
     - \<padding\>
         - For 8-bytes alignment
     - \<message body\>
@@ -158,6 +160,7 @@ Arrow에 IPC protocol이나 File Structure는 결국 FlatBuffers Schema로 정�
     - Type
       - Arrow에서 지원하는 Logical Data Type
       - Type 각각에 고유한 Memory Layout이 정의되어 있다.
+
       ```cpp
       ...
       table Int {
@@ -316,6 +319,7 @@ Arrow에 IPC protocol이나 File Structure는 결국 FlatBuffers Schema로 정�
 
 ## Java Implementation of Deserializing RecordBatch Message
 - IPC나 File로 교환되는 Class Object
+
 ```java
 org.apache.arrow.flatbuf
 // Generated Sources by flatc
@@ -330,8 +334,8 @@ public final class FieldNode extends Struct
 
 // RecordBatch Header에 포함됨. Column Array의 binary 상 offset
 public final class Buffer extends Struct
-
 ```
+
 - Messeage Deserialization
     (1) Message Header를 deserialize & Message body의 binary를 ArrowBuf로 Wrapping
     ```java
