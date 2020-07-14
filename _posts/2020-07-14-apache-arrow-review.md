@@ -57,8 +57,7 @@ excerpt: |
       ```
 
 ## FlatBuffers & Apache Arrow
-Arrow에 IPC protocol이나 File Structure는 결국 FlatBuffers Schema로 정의된다.
-
+  - Arrow에 IPC protocol이나 File Structure는 결국 FlatBuffers Schema로 정의된다.
   [https://github.com/apache/arrow/tree/master/format](https://github.com/apache/arrow/tree/master/format)
 
 
@@ -251,25 +250,21 @@ Arrow에 IPC protocol이나 File Structure는 결국 FlatBuffers Schema로 정�
   - Layout Type
     - [https://arrow.apache.org/docs/format/Columnar.html#fixed-size-primitive-layout](https://arrow.apache.org/docs/format/Columnar.html#fixed-size-primitive-layout)
     - Fixed-size Primitive Layout : validity buffer + data buffer
-    ```cpp
-    Example Layout: Int32 Array
+    - Example Layout
+      ```
+      Int32 Array
+      [1, null, 2, 4, 8]
+      ```
+      * Length: 5, Null count: 1
+      * Validity bitmap buffer:
+        |Byte 0 (validity bitmap) | Bytes 1-63            |
+        |-------------------------|-----------------------|
+        | 00011101                | 0 (padding)           |
 
-    [1, null, 2, 4, 8]
-
-    * Length: 5, Null count: 1
-    * Validity bitmap buffer:
-
-      |Byte 0 (validity bitmap) | Bytes 1-63            |
-      |-------------------------|-----------------------|
-      | 00011101                | 0 (padding)           |
-
-    * Value Buffer:
-
-      |Bytes 0-3   | Bytes 4-7   | Bytes 8-11  | Bytes 12-15 | Bytes 16-19 | Bytes 20-63 |
-      |------------|-------------|-------------|-------------|-------------|-------------|
-      | 1          | unspecified | 2           | 4           | 8           | unspecified |
-
-    ```
+      * Value Buffer:
+        |Bytes 0-3   | Bytes 4-7   | Bytes 8-11  | Bytes 12-15 | Bytes 16-19 | Bytes 20-63 |
+        |------------|-------------|-------------|-------------|-------------|-------------|
+        | 1          | unspecified | 2           | 4           | 8           | unspecified |
     - Variable-size Binary Layout : validity buffer + offset buffer + data buffer
       - 각각의 value가 0이상의 byte를 가짐
       - Offset Buffer : offset을 저장 → (32bit or 64bit) x (array length + 1)
@@ -337,6 +332,7 @@ public final class Buffer extends Struct
 ```
 
 - Messeage Deserialization
+
     (1) Message Header를 deserialize & Message body의 binary를 ArrowBuf로 Wrapping
     ```java
       // org.apache.arrow.vector.ipc.message.MessageChannelReader
@@ -442,6 +438,7 @@ public final class Buffer extends Struct
         return arrowRecordBatch;
       }
     ```
+
 ## Conversion Between Parquet & Arrow
 - Representation of Flat schema\
     Arrow의 경우 Parquet과 달리 null value도 memory를 차지 함
