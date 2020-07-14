@@ -86,7 +86,6 @@ excerpt: |
 - File Format
   - Body는 Streaming format과 동일
   - Footer영역 : Schema 복사본 포함
-
     ```cpp
     <magic number "ARROW1">
     <empty padding bytes [to 8 byte boundary]>
@@ -256,12 +255,13 @@ excerpt: |
       [1, null, 2, 4, 8]
       ```
       * Length: 5, Null count: 1
-      * Validity bitmap buffer:
+      * Validity bitmap buffer
+
         |Byte 0 (validity bitmap) | Bytes 1-63            |
         |-------------------------|-----------------------|
         | 00011101                | 0 (padding)           |
+      * Value Buffer
 
-      * Value Buffer:
         |Bytes 0-3   | Bytes 4-7   | Bytes 8-11  | Bytes 12-15 | Bytes 16-19 | Bytes 20-63 |
         |------------|-------------|-------------|-------------|-------------|-------------|
         | 1          | unspecified | 2           | 4           | 8           | unspecified |
