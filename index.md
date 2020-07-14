@@ -179,7 +179,7 @@ layout: main
       </div>
       <div class="col-lg-6">
         <div class="video-box set-bg" data-setbg="/assets/img/video-box-2.png">
-          <a href="https://www.youtube.com/watch?v=Uz-IklqI3MQ" class="video-popup">
+          <a href="https://www.youtube.com/watch?v=YiDQnIjG4AU" class="video-popup">
             <i class="fa fa-play"></i>
           </a>
         </div>
