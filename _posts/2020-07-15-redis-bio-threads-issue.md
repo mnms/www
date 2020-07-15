@@ -128,7 +128,7 @@ GDB로 오류 발생 후 상황을 보면 아래와 같습니다.
 
 이러한 이유로 정상적으로 failover가 수행되지 않고 있습니다.
 
-``` console
+``` bash 
 (gdb) info threads
   Id   Target Id         Frame
   12   Thread 0x7f3dfe1ff700 (LWP 134497) "rocksdb:bg0" 0x00007f3e061e8a35 in pthread_cond_wait@@GLIBC_2.3.2 () from /lib64/libpthread.so.0
