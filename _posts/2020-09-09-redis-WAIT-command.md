@@ -54,10 +54,10 @@ def save_payment(payment_id)
     end
 ```
 
-## REDIS Source code
-- redis 5.0 부분 소스 코드를 발췌
+## REDIS Source code in 5.0 version
 - waitCommand 구현 부분 (replication.c)
-```c
+
+```cpp
 void waitCommand(client *c) {
     mstime_t timeout;
     long numreplicas, ackreplicas;
@@ -81,10 +81,11 @@ void waitCommand(client *c) {
     // (실제로는 replicationRequestAckFromSlaves에서는 바로 REPLCONF GETACK을 보내진 않고 flag설정 후 다음 event loop에서 전송한다. 이는 WAIT요청이 여러 클라이언트로 부터 동시에 이루어져도 한 event loop내에서는 한번만 REPLCONF GETACK을 보내기 위한 처리로 보여진다.)
     replicationRequestAckFromSlaves();
 }
-
 ```
+
 - Replica의 REPLCONF GETACK 처리 부분 (replication.c)
-```c
+
+```cpp
 void replconfCommand(client *c) {
     ...
      else if (!strcasecmp(c->argv[j]->ptr,"getack")) {
@@ -95,8 +96,10 @@ void replconfCommand(client *c) {
     ...    
 }
 ```
+
 - Client를 unblock하는 부분 (server.c)
-```c
+
+```cpp
 // wait Command의 다음 event loop 시작점에서 호출됨
 void beforeSleep(struct aeEventLoop *eventLoop) {
     ...
