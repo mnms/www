@@ -31,10 +31,11 @@ redis 127.0.0.1:9999> wait 5 100
 - replication offset : 모든 replica는 현재까지 처리완료한 offset을 저장하고 있음
     - 매초마다 replica는 replication offset을 master로 전송(ACK)
 - WAIT command가 호출될 시
-    - 현재 WAIT command를 호출한 클라이언트가 있다면 → Grouping 해서 한번에 처리
     - 현재 WAIT command를 호출한 클라이언트가 없다면 → REPLCONF GETACK command를 Replica로 propagate함
         - Replica는 REPLCONF GETACK을 받자마자 현재까지 처리한 Replication offset을 master로 전송(ACK)
         - WAIT command parameter로 전달된 replication 수만큼 ACK을 받자마자 blocking을 풀고 client로 응답 전송
+    - 현재 WAIT command를 호출한 클라이언트가 있다면 → REPLCONF GETACK command을 전송하지 않고 기존 Wait중인 client와 동일 Event loop에서 Replica의 ACK을 기다림
+
 
 ## Client 사용 예시
 - 3개 이상의 Replica가 살아있을 때만 payment_id를 save하는 예제
