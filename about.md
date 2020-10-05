@@ -143,12 +143,12 @@ permalink: /about
       </div>
       <div class="col-md-4">
         <div class="team-member">
-          <a href="#"><img src="/assets/img/team/junghwan.png" alt=""></a>
+          <a href="#"><img src="/assets/img/team/soohyun.png" alt=""></a>
           <div class="member-info">
-            <h3>Junghwan Park</h3>
-            <p>Software Engineer</p>
-            <a href="https://github.com/9bow"><i class="fa fa-2x fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/reservepark/"><i class="fa fa-2x fa-linkedin"></i></a>
+            <h3>Soohyun Park</h3>
+            <p>Software Engineer, Ph.D</p>
+            <a href="https://github.com/ardeness"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/soohyun-park-b43a57a6/"><i class="fa fa-2x fa-linkedin"></i></a>
           </div>
         </div>
       </div>
@@ -171,6 +171,17 @@ permalink: /about
             <p>Software Engineer, Ph.D</p>
             <a href="https://github.com/moohnam"><i class="fa fa-2x fa-github"></i></a>
             <a href="https://www.linkedin.com/in/moohyeon-nam-97721711b/"><i class="fa fa-2x fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="team-member">
+          <a href="#"><img src="/assets/img/team/junghwan.png" alt=""></a>
+          <div class="member-info">
+            <h3>Junghwan Park</h3>
+            <p>Software Engineer</p>
+            <a href="https://github.com/9bow"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/reservepark/"><i class="fa fa-2x fa-linkedin"></i></a>
           </div>
         </div>
       </div>
