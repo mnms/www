@@ -237,15 +237,15 @@ excerpt: |
   - Buffer의 Memory Layout : Column의 Logical Type에 따라서 결정됨
     ![ApacheArrowReview-2.png](/assets/blog/2020/07/ApacheArrowReview-2.png)
     - Validity bitmaps
-    - null 여부를 bit로 marking하는 Buffer
-    - LSB numbering
-      ```cpp
-      values = [0, 1, null, 2, null, 3]
+      - null 여부를 bit로 marking하는 Buffer
+      - LSB numbering
+        ```cpp
+        values = [0, 1, null, 2, null, 3]
 
-      bitmap
-      j mod 8   7  6  5  4  3  2  1  0
-                0  0  1  0  1  0  1  1 
-      ```
+        bitmap
+        j mod 8   7  6  5  4  3  2  1  0
+                  0  0  1  0  1  0  1  1 
+        ```
   - Layout Type
     - [https://arrow.apache.org/docs/format/Columnar.html#fixed-size-primitive-layout](https://arrow.apache.org/docs/format/Columnar.html#fixed-size-primitive-layout)
     - Fixed-size Primitive Layout : validity buffer + data buffer
