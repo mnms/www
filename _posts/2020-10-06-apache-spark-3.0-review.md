@@ -186,7 +186,7 @@ excerpt: |
 
 - Spark 자체가 GPU를 이용한 Query 가속을 지원하는 것은 아님
 - Spark 3.0부터  Driver/Executor를 위한 Plugin API를 제공([SPARK-29397](https://issues.apache.org/jira/browse/SPARK-29397))
-- 별도의 Project인 Spark-rapids가 Plugin으로서 import한 후 GPU로 Query 실행을 가속할 수 있다.
+- 별도의 Project인 Spark-rapids를 Plugin으로서 import한 후 GPU로 Query 실행을 가속할 수 있다.
 - Spark-rapids : Rapids Accelerator for Apache Spark
     - GitHub : [https://github.com/nvidia/spark-rapids](https://github.com/nvidia/spark-rapids)
     - Catalyst Optimizer의 Physical Plan 을 GPU용으로 전환
