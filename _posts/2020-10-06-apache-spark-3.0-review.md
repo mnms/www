@@ -177,10 +177,12 @@ excerpt: |
     - Data Source에서 Catalog 기능 지원하고자 할 때
     - Data Source가 batch & streaming을 동시에 지원하고자 할 때
     - Scan 성능 향상 시키고자 할 때 → Vectorized reader 지원 + shuffle시 partition pruning 기능 지원(Dynamic partition pruning 기능을 의미하는 듯?)
-    - DataFrameWriter에서 Task & Job 단위 transaction(commit/abort) 지원
-- [Spark AI Summit 2018 : Apache Spark Data Source V2](https://databricks.com/session/apache-spark-data-source-v2-continues)
-    - [SlideShare](https://www.slideshare.net/databricks/apache-spark-data-source-v2-with-wenchen-fan-and-gengliang-wang)
-- Example : [JDBC DataSource with V2](http://shzhangji.com/blog/2018/12/08/spark-datasource-api-v2/)
+    - DataFrameWriter에서 Task & Job 단위 transaction(commit/abort) 지원 
+- ~~[Spark AI Summit 2018 : Apache Spark Data Source V2](https://databricks.com/session/apache-spark-data-source-v2-continues)~~
+    - ~~[SlideShare](https://www.slideshare.net/databricks/apache-spark-data-source-v2-with-wenchen-fan-and-gengliang-wang)~~ : (→ 이 Link에서 사용한 DataSourceV2 class 등은 2.4 API이고 3.0에서는 삭제되었다.)
+- Example
+    - ~~[JDBC DataSource with V2](http://shzhangji.com/blog/2018/12/08/spark-datasource-api-v2/)~~ (→ 이 Link에서 사용한 DataSourceV2 class 등은 2.4 API이고 3.0에서는 삭제되었다.)
+    - [Madhukar's Blog : datasource-v2-spark-three](http://blog.madhukaraphatak.com/categories/datasource-v2-spark-three/) (→ 3.0 기준으로 작성된 blog)
 
 ### Accelerating Query with GPU
 
