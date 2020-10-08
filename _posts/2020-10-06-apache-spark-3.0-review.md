@@ -50,11 +50,11 @@ excerpt: |
                 ![ApacheSparkReview-3.png](/assets/blog/2020/10/ApacheSparkReview-3.png)
 
         - Dynamically optimizing skew joins
-            - 개선 포인트 : Table Join 시 Skew된 Partition을 Runtime에 SubPartition으로 나눠서 Shuffling
+            - 개선 포인트 : Sort-merge Join 시 Skew된 Partition을 Runtime에 SubPartition으로 나눠서 Join
 
             ![ApacheSparkReview-4.png](/assets/blog/2020/10/ApacheSparkReview-4.png)
 
-            - (ex) 두개의 Table A,B를 sort merge join을 수행 시 Sort shuffling 시 Table A의 A0의 데이터가 너무 크다면 아래처럼 SubPartition으로 나눠서 Shuffling
+            - (ex) 두개의 Table A,B를 Sort-merge Join을 수행 시 Sort shuffling 시 Table A의 A0 Partition의 데이터가 너무 크다면 아래처럼 SubPartition으로 나눠서 Join
 
                 ![ApacheSparkReview-5.png](/assets/blog/2020/10/ApacheSparkReview-5.png)
 
