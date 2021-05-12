@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Lightning DB - DRAM/SSD optimized Realtime In-memory DBMS</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="LightningDB - DRAM/SSD optimized Realtime In-memory DBMS. It uses customized redis & rocksDB, Apache Spark as well.">
+  <meta name="keywords" content="dbms, realtime, olap, dram optimized, nvme optimzed, ssd optimized">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon -->
+  <link href="/favicon.ico" rel="shortcut icon"/>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"/>
+  <link rel="stylesheet" href="/assets/css/slicknav.min.css"/>
+  <link rel="stylesheet" href="/assets/css/owl.carousel.min.css"/>
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/style.css"/>
+
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<link rel="stylesheet" href="/assets/css/style-blog.css"/>
+<link rel="stylesheet" href="/assets/css/code-syntax-theme.css"/>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="/assets/js/mermaid/mermaid.min.js"></script>
+<script type="text/javascript">mermaid.initialize({startOnLoad:true});</script>
+<body>
+<!-- Header section  -->
+<header class="header-section clearfix">
+  <!-- <div class="header-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-6 text-md-right">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="site-navbar">
+    <!-- Logo -->
+    <a href="/" class="site-logo">
+      <img src="/assets/img/logo.png" alt="">
+    </a>
+    <div class="header-right">
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-2x fa-envelope icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>lightningdb@sktelecom.com</h6>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-3x fa-map-marker icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>8F, 264, PangyoRo, BundangGu</h6>
+          <p>SeongnamSi, GyeonggiDo, Korea</p>
+        </div>
+      </div>
+    </div>
+    <!-- Menu -->
+    <nav class="site-nav-menu">
+      <ul>
+
+        <li><a href="/">Home</a></li>
+
+        <li><a href="/about">About us</a></li>
+
+        <li><a href="/blog">Blog</a></li>
+
+        <li><a href="https://docs.lightningdb.io" target='_blank'>Docs</a></li>
+
+        <li><a href="/contact">Contact</a></li>
+
+      </ul>
+    </nav>
+
+  </div>
+</header>
+<!-- Header section end  -->
+<!-- Page top section  -->
+<section class="page-top-section set-bg" data-setbg="/assets/img/page-top-bg/blog.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <h2>Blog</h2>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page top section end  -->
+
+<!-- Blog page section -->
+<section class="blog-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 blog-page">
+        <h2>Apache Spark 3.0 변경 사항</h2>
+        <div class="blog-meta">
+          <i class="fa fa-calendar"></i> <span class="meta-date">October 06, 2020</span>&nbsp;
+          <i class="fa fa-user"></i> <span class="meta-author">Dooyoung Hwang</span>
+        </div>
+        <div class="blog-content">
+<h1 id="spark-30-변경-사항">Spark 3.0 변경 사항</h1>
+
+<h3 id="language-support">Language support</h3>
+
+<ul>
+  <li>Scala 2.12 , JDK 11, Python 2.x is deprecated.</li>
+</ul>
+
+<h3 id="adaptive-execution-of-spark-sql">Adaptive execution of Spark SQL</h3>
+
+<ul>
+  <li>Spark 2.x Catalyst Optimizer : Rule + Cost based optimizer
+    <ul>
+      <li>Table statics 기반 → missing, outdated</li>
+    </ul>
+  </li>
+  <li>Spark 3.x Catalyst Optimizer : Rule + Cost + Runtime ⇒ Adaptive Planning
+    <ul>
+      <li>Task 수행을 마친 Stage의 결과의 statics를 바탕으로 아직 수행되지 않은 Stage들에 대해 Logical Plan부터 다시 Optimize</li>
+    </ul>
+
+    <p><img src="/assets/blog/2020/10/ApacheSparkReview.png" alt="ApacheSparkReview.png" /></p>
+
+    <ul>
+      <li>Config
+        <ul>
+          <li>spark.sql.adaptive.enabled → default false이고 true로 변경 시 enable됨</li>
+        </ul>
+      </li>
+      <li>종류
+        <ul>
+          <li>Dynamically coalescing shuffle partitions
+            <ul>
+              <li>Shuffle 시 Partitioning에 대한 Runtime optimization</li>
+              <li>기존에는 Suffle partition 갯수가 spark.sql.shuffle.partitions config에 따라 결정되었음
+                <ul>
+                  <li>너무 작을 때는 GC pressure 및 Spilling overhead발생</li>
+                  <li>너무 클 때는 비효율적인 I/O 및 Scheduler pressure발생</li>
+                </ul>
+              </li>
+              <li>
+                <p>개선 포인트 : 처음에는 Shuffle Partition갯수를 크게 잡은 후 Shuffling Stage수행 후 Data Size가 작은 Partition을 하나의 파티션으로 묶어서 Reduction Stage의 Partition수를 줄임</p>
+
+                <p>(ex) SELECT max(i)FROM tbl GROUP BY j</p>
+
+                <p>(1) 5개 partition으로 column j를 key로 shuffling을 수행</p>
+
+                <p><img src="/assets/blog/2020/10/ApacheSparkReview-1.png" alt="ApacheSparkReview-1.png" /></p>
+
+                <p>(2) Runtime Data size가 작은 파티션을 통합해 하나의 Partition으로 묶은 후 Reduction</p>
+
+                <p><img src="/assets/blog/2020/10/ApacheSparkReview-2.png" alt="ApacheSparkReview-2.png" /></p>
+              </li>
+            </ul>
+          </li>
+          <li>Dynamically switching join strategies
+            <ul>
+              <li>기존에는 Query planning 단계에서 ANALYZE Command로 table의 statics 정보를 얻을 수 있을 때만 Broadcast-hash join실행하고 statics 정보가 없을 때는 Sort-merge join을 실행했음 (Broadcast-hash join은 Local에서 join이 이루어지므로 shuffling이 발생하지 않아 Sort-merge join 보다 속도가 빠르다.)</li>
+              <li>
+                <p>개선 포인트 : Table에대한 Scan Stage가 끝난 후 Table 데이터 사이즈가 broadcast할 수 있을만큼 작다면 Sort-merge join에서 Broadcast-hash join으로 Plan을 변경함</p>
+
+                <p><img src="/assets/blog/2020/10/ApacheSparkReview-3.png" alt="ApacheSparkReview-3.png" /></p>
+              </li>
+            </ul>
+          </li>
+          <li>Dynamically optimizing skew joins
+            <ul>
+              <li>개선 포인트 : Sort-merge Join 시 Skew된 Partition을 Runtime에 SubPartition으로 나눠서 Join</li>
+            </ul>
+
+            <p><img src="/assets/blog/2020/10/ApacheSparkReview-4.png" alt="ApacheSparkReview-4.png" /></p>
+
+            <ul>
+              <li>
+                <p>(ex) 두개의 Table A,B를 Sort-merge Join을 수행 시 Sort shuffling 시 Table A의 A0 Partition의 데이터가 너무 크다면 아래처럼 SubPartition으로 나눠서 Join</p>
+
+                <p><img src="/assets/blog/2020/10/ApacheSparkReview-5.png" alt="ApacheSparkReview-5.png" /></p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="dynamic-partition-pruning">Dynamic Partition Pruning</h3>
+
+<ul>
+  <li><a href="https://www.slideshare.net/databricks/dynamic-partition-pruning-in-apache-spark">Spark summit slide</a></li>
+  <li>Dimension table(사이즈가 작아서 Broadcast-hash join시 broadcast되는 table)과 사이즈가 큰 Fact table을 Join할 때 → Dimension table을 broadcast한 후 Fact table을 Scan하기 전에 Dimension table을 먼저 Scan한 후 이를 바탕으로 Fact table의 partition Pruning을 수행함</li>
+  <li>TPC-DS 쿼리 102개 중 60개 Query가 2x ~ 18x까지 성능 향상</li>
+  <li>
+    <p>예시</p>
+
+    <p>Dimension Table t2과 Face Table와 t2를 Join</p>
+
+    <p>→ t2 &amp; Filter Pushdown &amp; Scan</p>
+
+    <p>→ Logical Plan변경 : Fact table t1에 t1.pKey.IN(SELECT t2.pKey FROM t2 WHERE t2.id &lt; 2)라는 IN Filter 삽입</p>
+
+    <p><img src="/assets/blog/2020/10/ApacheSparkReview-6.png" alt="ApacheSparkReview-6.png" /></p>
+
+    <p>→ Runtime에 t2 table Scan을 마친 후 t1.pKey.IN(SELECT t2.pKey FROM t2 WHERE t2.id &lt; 2)을 Evaluation하여 Value를 가진 IN Filter로 전환</p>
+
+    <p>→ IN Filter를 t1 table Scan으로 Pushdown후 Partition pruning 수행 (t1.pKey는 t1 table의 Partition column)</p>
+
+    <p><img src="/assets/blog/2020/10/ApacheSparkReview-7.png" alt="ApacheSparkReview-7.png" /></p>
+
+    <p>→ Partition pruning기반으로 Scan하는 파일 갯수를 줄여 성능 향상</p>
+  </li>
+</ul>
+
+<h3 id="join-hint">Join Hint</h3>
+
+<ul>
+  <li>
+    <p>How to use?</p>
+
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre>  <span class="o">#</span> <span class="n">Broadcast</span> <span class="n">Hash</span> <span class="k">Join</span><span class="p">:</span> <span class="n">Fast</span><span class="p">(</span><span class="k">No</span> <span class="n">shuffle</span><span class="p">,</span> <span class="k">No</span> <span class="n">sort</span><span class="p">),</span> <span class="n">One</span> <span class="n">side</span> <span class="n">small</span> <span class="k">table</span><span class="p">.</span>
+  <span class="k">SELECT</span> <span class="cm">/*+BROADCAST(a)*/</span><span class="n">id</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="k">key</span>
+
+  <span class="o">#</span> <span class="n">Sort</span><span class="o">-</span><span class="n">Merge</span> <span class="k">Join</span><span class="p">:</span> <span class="n">Can</span> <span class="n">handle</span> <span class="k">any</span> <span class="k">data</span> <span class="k">size</span><span class="p">.</span> <span class="n">shuffle</span> <span class="o">+</span> <span class="n">sort</span> <span class="o">-&gt;</span> <span class="n">slow</span>
+  <span class="k">SELECT</span> <span class="cm">/*+MERGE(a,b)*/</span><span class="n">id</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="k">key</span>
+
+  <span class="o">#</span> <span class="n">Shuffle</span> <span class="n">Hash</span> <span class="k">Join</span><span class="p">:</span> <span class="n">Shuffle</span> <span class="n">but</span> <span class="k">no</span> <span class="n">Sort</span><span class="p">.</span> <span class="n">OOM</span> <span class="n">if</span> <span class="k">data</span> <span class="k">are</span> <span class="n">skewed</span><span class="p">.</span>
+  <span class="k">SELECT</span> <span class="cm">/*+SHUFFLE_HASH(a,b)*/</span><span class="n">id</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="k">key</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="k">key</span>
+
+  <span class="o">#</span> <span class="n">Shuffle</span> <span class="n">Nested</span> <span class="n">Loop</span> <span class="k">Join</span><span class="p">:</span> <span class="n">Does</span> <span class="k">not</span> <span class="n">require</span> <span class="k">JOIN</span> <span class="k">key</span>
+  <span class="k">SELECT</span> <span class="cm">/*+SHUFFLE_REPLICATE_NL(a,b)*/</span><span class="n">id</span> <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="pandas-udf--python-type-hints">Pandas UDF &amp; Python Type Hints</h3>
+
+<ul>
+  <li><a href="https://databricks.com/blog/2020/05/20/new-pandas-udfs-and-python-type-hints-in-the-upcoming-release-of-apache-spark-3-0.html">DataBricks Blog: New Pandas UDFs and Python Type Hints in the Upcoming Release of Apache Spark 3.0</a></li>
+</ul>
+
+<h3 id="new-functions">New Functions</h3>
+
+<ul>
+  <li>
+    <p><a href="https://medium.com/javarevisited/spark-3-0-new-functions-in-a-nutshell-a929fca93413">Mediums : Spark 3.0 — New Functions in a Nutshell</a></p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>  sinh,cosh,tanh,asinh,acosh,atanh,any,bit_and,bit_or,bit_count,bit_xor,
+  bool_and,bool_or,count_if,date_part,extract,forall,from_csv,
+  make_date,make_interval,make_timestamp,map_entries
+  map_filter,map_zip_with,max_by,min_by,schema_of_csv,to_csv
+  transform_keys,transform_values,typeof,version
+  xxhash64
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="accelerator-aware-scheduling">Accelerator Aware Scheduling</h3>
+
+<ul>
+  <li>Standalone, YARN, k8s에서 Accelerator Resource Scheduling 지원</li>
+  <li>현재는 GPU만 지원하지만 앞으로는 FPGA나 TPU도 지원 예정</li>
+  <li>현재는 Application Level에서만 resource 사용량을 Cluster Manager에 요청할 수 있음. 앞으로는 Job, Stage, Task Level로 지원 예정</li>
+  <li>Discover &amp; Request Accelerator
+    <ul>
+      <li><a href="https://issues.apache.org/jira/browse/SPARK-27024">SPARK-27024</a>: Driver/Executor가 accelerator resource 인식하는 script 설정 가능
+        <ul>
+          <li>spark.driver.resource.${resourceName}.discoveryScript</li>
+          <li>spark.executor.resource.${resourceName}.discoveryScript</li>
+        </ul>
+      </li>
+      <li><a href="https://issues.apache.org/jira/browse/SPARK-27366">SPARK-27366</a>: Application Level로 Accelerator Resource 설정
+        <ul>
+          <li>spark.executor.resource.${resourceName}.amount</li>
+          <li>spark.driver.resource.${resourceName}.amount</li>
+          <li>spark.task.resource.${resourceName}.amount</li>
+          <li>
+            <p>Task Context 에서 Task 수행 중에 할당된 Accelerator resource를 얻어와 Task 수행 시 사용할 수 있음</p>
+
+            <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>  <span class="n">assigned_gpu</span> <span class="o">=</span> <span class="n">TaskContext</span><span class="p">.</span><span class="n">get</span><span class="p">().</span><span class="n">resources</span><span class="p">().</span><span class="n">get</span><span class="p">(</span><span class="s">"gpu"</span><span class="p">)</span>
+  									<span class="p">.</span><span class="n">get</span><span class="p">.</span><span class="n">addresses</span><span class="p">.</span><span class="n">head</span> 
+
+  <span class="k">with</span> <span class="n">tf</span><span class="p">.</span><span class="n">device</span><span class="p">(</span><span class="n">assigned_gpu</span><span class="p">):</span>
+  	<span class="c1"># training code
+</span></pre></td></tr></tbody></table></code></pre></div>            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="monitoring-and-debuggability">Monitoring and Debuggability</h3>
+
+<ul>
+  <li>New Spark Streaming UI
+    <ul>
+      <li><a href="https://databricks.com/blog/2020/07/29/a-look-at-the-new-structured-streaming-ui-in-apache-spark-3-0.html">DataBricks Blog : A look at the new Structured Streaming UI in Apache Spark 3.0</a></li>
+    </ul>
+  </li>
+  <li>New EXPLAIN Command
+    <ul>
+      <li><a href="https://medium.com/analytics-vidhya/spark-3-understanding-explain-formatted-d4f33c1dee86">Medium : Spark 3 — Understanding Explain Formatted</a></li>
+    </ul>
+
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>  <span class="n">df</span><span class="p">.</span><span class="n">explain</span><span class="p">(</span><span class="s">"simple"</span><span class="p">)</span> <span class="o">==</span> <span class="n">df</span><span class="p">.</span><span class="n">explain</span><span class="p">()</span>
+  <span class="n">df</span><span class="p">.</span><span class="n">explain</span><span class="p">(</span><span class="s">"extended"</span><span class="p">)</span> <span class="o">==</span> <span class="n">df</span><span class="p">.</span><span class="n">explain</span><span class="p">(</span><span class="n">true</span><span class="p">)</span>
+  <span class="n">df</span><span class="p">.</span><span class="n">explain</span><span class="p">(</span><span class="s">"cost"</span><span class="p">)</span> <span class="c1"># Cost Base &amp; obtain statistics
+</span>  <span class="n">df</span><span class="p">.</span><span class="n">explain</span><span class="p">(</span><span class="s">"formatted"</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="built-in-datasources-개선">Built-in DataSources 개선</h3>
+
+<ul>
+  <li>CSV Filter pushdown : <a href="https://issues.apache.org/jira/browse/SPARK-30323">SPARK-30323</a></li>
+  <li>Parquet/ORC Nested column 성능 개선
+    <ul>
+      <li>Parquet filter pushdown for nested columns : <a href="https://issues.apache.org/jira/browse/SPARK-17636">SPARK-17636</a></li>
+      <li>Parquet/ORC Column pruning for nested columns : <a href="https://issues.apache.org/jira/browse/SPARK-25603">SPARK-25603</a></li>
+    </ul>
+  </li>
+  <li>Binary file data source : <a href="https://sparkbyexamples.com/spark/spark-read-binary-file-into-dataframe/">Spark 3.0 Read Binary File into DataFrame</a></li>
+</ul>
+
+<h3 id="catalog-plugin-api">Catalog Plugin API</h3>
+
+<ul>
+  <li>Table Metadata관련 Plugin API가 추가되었음</li>
+  <li>DataSource Level에서 table catalog API를 지원할 수 있게 됨 : DataSource가 V2 API 지원 시 meta-store역할도 담당할 수 있을 걸로 보임</li>
+  <li><a href="https://docs.google.com/document/d/1zLFiA1VuaWeVxeTDXNg8bL6GP3BVoOZBkewFtEnjEoo/edit#heading=h.m45webtwxf2d">Proposal Document : Spark API for Table Metadata</a> → <a href="https://issues.apache.org/jira/browse/SPARK-31121">SPARK-31121</a>
+    <ul>
+      <li>SQL Conf 로 Catalog Plugin class 설정 : spark.sql.catalog.catalog-name=com.example.YourCatalogClass</li>
+      <li>Plugin의 Property도 함께 설정 가능 : spark.sql.catalog.catalog-name.(key)=(value)</li>
+      <li>API Doc : <a href="https://spark.apache.org/docs/3.0.0-preview2/api/java/org/apache/spark/sql/connector/catalog/CatalogPlugin.html">CatalogPlugin</a> , <a href="https://spark.apache.org/docs/3.0.0-preview2/api/java/org/apache/spark/sql/connector/catalog/TableCatalog.html">TableCatalog</a></li>
+    </ul>
+  </li>
+  <li><a href="https://docs.google.com/document/d/1jEcvomPiTc5GtB9F7d2RTVVpMY64Qy7INCA_rFEd9HQ/edit#heading=h.82w8qxfl2uwl">Proposal Document : Identifiers for multi-catalog support</a> → <a href="https://issues.apache.org/jira/browse/SPARK-27066">SPARK-27066</a></li>
+</ul>
+
+<h3 id="datasource-v2-api">DataSource V2 API</h3>
+
+<ul>
+  <li>When to use DataSource V2 API?
+    <ul>
+      <li>Data Source에서 Catalog 기능 지원하고자 할 때</li>
+      <li>Data Source가 batch &amp; streaming을 동시에 지원하고자 할 때</li>
+      <li>Scan 성능 향상 시키고자 할 때 → Vectorized reader 지원 + shuffle시 partition pruning 기능 지원(Dynamic partition pruning 기능을 의미하는 듯?)</li>
+      <li>DataFrameWriter에서 Task &amp; Job 단위 transaction(commit/abort) 지원</li>
+    </ul>
+  </li>
+  <li><del><a href="https://databricks.com/session/apache-spark-data-source-v2-continues">Spark AI Summit 2018 : Apache Spark Data Source V2</a></del>
+    <ul>
+      <li><del><a href="https://www.slideshare.net/databricks/apache-spark-data-source-v2-with-wenchen-fan-and-gengliang-wang">SlideShare</a></del> : (→ 이 Link에서 사용한 DataSourceV2 class 등은 2.4 API이고 3.0에서는 삭제되었다.)</li>
+    </ul>
+  </li>
+  <li>Example
+    <ul>
+      <li><del><a href="http://shzhangji.com/blog/2018/12/08/spark-datasource-api-v2/">JDBC DataSource with V2</a></del> (→ 이 Link에서 사용한 DataSourceV2 class 등은 2.4 API이고 3.0에서는 삭제되었다.)</li>
+      <li><a href="http://blog.madhukaraphatak.com/categories/datasource-v2-spark-three/">Madhukar’s Blog : datasource-v2-spark-three</a> (→ 3.0 기준으로 작성된 blog)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="accelerating-query-with-gpu">Accelerating Query with GPU</h3>
+
+<ul>
+  <li>Spark 자체가 GPU를 이용한 Query 가속을 지원하는 것은 아님</li>
+  <li>Spark 3.0부터  Driver/Executor를 위한 Plugin API를 제공(<a href="https://issues.apache.org/jira/browse/SPARK-29397">SPARK-29397</a>)</li>
+  <li>별도의 Project인 Spark-rapids를 Plugin으로서 import한 후 GPU로 Query 실행을 가속할 수 있다.</li>
+  <li>Spark-rapids : Rapids Accelerator for Apache Spark
+    <ul>
+      <li>GitHub : <a href="https://github.com/nvidia/spark-rapids">https://github.com/nvidia/spark-rapids</a></li>
+      <li>Catalyst Optimizer의 Physical Plan 을 GPU용으로 전환
+        <ul>
+          <li>Scan : Row Iterator기반 RDD → ColumnBatch 기반 RDD</li>
+          <li>Operation : row-by-row기반 Operation(Filter, Shuffle, Join, Aggregation등) Plan (CPU) → ColumnBatch기반 Operation으로 바꾼 후 GPU에서 수행</li>
+        </ul>
+      </li>
+      <li><a href="https://github.com/NVIDIA/spark-rapids/tree/branch-0.3/docs/dev#rapids-plugin-for-apache-spark-developer-overview">RAPIDS Plugin for Apache Spark Developer Overview</a></li>
+      <li><a href="https://databricks.com/session_na20/deep-dive-into-gpu-support-in-apache-spark-3-x">Spark AI summit 2020 : Deep Dive into GPU Support in Apache Spark 3.x</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="reference">Reference</h3>
+
+<ul>
+  <li><a href="https://medium.com/cloudzone/apache-spark-3-0-review-what-the-spark-is-all-about-998844e12b3c">Apache Spark 3.0 Review — What the Spark is all about</a></li>
+  <li><a href="https://youtu.be/l6SuXvhorDY">Youtube : Deep Dive into the New Features of Apache Spark 3.0</a></li>
+  <li><a href="https://databricks.com/blog/2020/05/29/adaptive-query-execution-speeding-up-spark-sql-at-runtime.html">DataBricks blog : Adaptive Query Execution: Speeding Up Spark SQL at Runtime</a></li>
+  <li><a href="https://medium.com/@Alibaba_Cloud/aqe-speeding-up-spark-sql-during-runtime-f0f5354be7aa">Medium : AQE - Speeding up Spark SQL during Runtime</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Blog page section end -->
+
+<!-- Call to action section  -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 d-flex align-items-center">
+        <h2>We provide speed and trust to business.</h2>
+      </div>
+      <div class="col-lg-3 text-lg-right" >
+        <a href="/contact" class="site-btn sb-dark">contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Call to action section end  -->
+
+<!-- Footer section -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="footer-widget about-widget">
+          <img src="/assets/img/logo-light.png" alt="">
+          <div class="footer-social">
+            <a target="_blank" href="https://github.com/mnms"><i class="fa fa-github"></i></a>
+            <a target="_blank" href="https://www.youtube.com/channel/UCj0aAcbjw0O-vVIcPMneNSw"><i class="fa fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-7">
+        <div class="footer-widget">
+          <h2 class="fw-title">Contact Us</h2>
+          <div class="footer-info-box">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-2x fa-envelope icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>lightningdb@sktelecom.com</p>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-3x fa-map-marker icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>8F, 264, PangyoRo, BundangGu<br>SeongnamSi, GyeonggiDo, Korea</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-buttom">
+    <div class="container">
+    <div class="row">
+      <div class="col-lg-4 order-2 order-lg-1 p-0">
+        <div class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved <br />This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></div>
+      </div>
+      <div class="col-lg-7 order-1 order-lg-2 p-0">
+        <ul class="footer-menu">
+          
+          <li ><a href="/">Home</a></li>
+          
+          <li ><a href="/about">About us</a></li>
+          
+          <li ><a href="/blog">Blog</a></li>
+          
+          <li ><a href="https://docs.lightningdb.io">Docs</a></li>
+          
+          <li ><a href="/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</footer>
+<!-- Footer section end -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-152587413-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-152587413-2');
+</script>
+
+<!--====== Javascripts & Jquery ======-->
+<script type="text/javascript" src="/assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.slicknav.min.js"></script>
+<script type="text/javascript" src="/assets/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="/assets/js/circle-progress.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<!-- <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

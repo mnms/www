@@ -1,0 +1,173 @@
+/*----------------------------------------*/
+/* Override Blog Content CSS
+/*----------------------------------------*/
+
+.blog-page .blog-content h1,
+.blog-page .blog-content h2,
+.blog-page .blog-content h3,
+.blog-page .blog-content h4,
+.blog-page .blog-content h5,
+.blog-page .blog-content h6 {
+  margin: 25px 0 15px 0;
+  color: #081624;
+  font-weight: 600;
+}
+
+.blog-page .blog-content h1 {
+  margin-top: 40px;
+  font-size: 38px;
+}
+
+.blog-page .blog-content h2 {
+  margin-top: 35px;
+  font-size: 30px;
+}
+
+.blog-page .blog-content h3 {
+  margin-top: 30px;
+  font-size: 24px;
+}
+
+.blog-page .blog-content h4 {
+  font-size: 18px;
+}
+
+.blog-page .blog-content h5 {
+  font-size: 17px;
+}
+
+.blog-page .blog-content h6 {
+  font-size: 16px;
+}
+
+.blog-page .blog-content p {
+  font-size: 16px;
+  color: #718090;
+  line-height: 2;
+  text-align: justify;
+  margin: 10px 0 10px 5px;
+}
+
+.blog-page .blog-content img {
+  max-width: 80%;
+  text-align: center;
+  border: 0px;
+}
+
+.blog-page .blog-content img.rounded-corners {
+  border-radius: 30px;
+}
+
+.blog-page .blog-content input:focus,
+.blog-page .blog-content select:focus,
+.blog-page .blog-content button:focus,
+.blog-page .blog-content textarea:focus {
+  outline: none;
+}
+
+.blog-page .blog-content div {
+  margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 16px;
+	font: inherit;
+  vertical-align: baseline;
+}
+
+.blog-page .blog-content a {
+  color: #474e57;
+}
+
+.blog-page .blog-content a:hover,
+.blog-page .blog-content a:focus {
+  text-decoration: underline;
+  outline: none;
+}
+
+.blog-page .blog-content blockquote {
+  display:block;
+  margin-left: 10px;
+  padding: 0 5px 0 15px;
+  position: relative;
+  font-family: sans-serif;
+  border-left: 8px solid #EFEFEF;
+  /* -moz-box-shadow: -1px 2px 5px #ccc;
+  -webkit-box-shadow: -1px 2px 5px #ccc;
+  box-shadow: -1px 2px 5px #ccc; */
+}
+
+.blog-page .blog-content ul,
+.blog-page .blog-content ol,
+.blog-page .blog-content pre {
+  padding: 0;
+  margin-left: 20px;
+  color: #718090;
+}
+
+.blog-page .blog-content ul:first,
+.blog-page .blog-content ol:first {
+  padding: 0;
+  margin-top: 10px;
+}
+
+.blog-page .blog-content ul:last-child,
+.blog-page .blog-content ol:last-child {
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.blog-page .blog-content li {
+  margin: 3px 0 3px 10px;
+}
+
+.blog-page .blog-content table {
+  border-collapse: collapse;
+  min-width: 50%;
+  margin-left: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid #dee2e6;
+  color: #718090;
+  font-size: 16px;
+}
+
+.blog-page .blog-content table th,
+.blog-page .blog-content table td {
+  padding: 0.6rem;
+  vertical-align: top;
+  border: 1px solid #dee2e6;
+}
+
+.blog-page .blog-content table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+  color: #747677;
+}
+
+.blog-page .blog-content table tbody + tbody {
+  border-top: 2px solid #dee2e6;
+}
+
+.blog-page .blog-content table thead th,
+.blog-page .blog-content table thead td {
+  border-bottom-width: 2px;
+}
+
+.blog-page .blog-content table tbody tr:hover {
+  color: #212529;
+  background-color: rgba(156, 156, 156, 0.075);
+}
+
+.blog-page .blog-content .MathJax,
+.blog-page .blog-content .MathJax_Display {
+  /* color: #3b3b3b; */
+  color: #747677;
+}
+
+.blog-page .blog-content .highlight {
+  padding: 7px 0 7px 0;
+}
+
+.blog-page .blog-content .mermaid {
+  min-width: 50%;
+  text-align: center;
+}

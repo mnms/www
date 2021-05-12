@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Lightning DB - DRAM/SSD optimized Realtime In-memory DBMS</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="LightningDB - DRAM/SSD optimized Realtime In-memory DBMS. It uses customized redis & rocksDB, Apache Spark as well.">
+  <meta name="keywords" content="dbms, realtime, olap, dram optimized, nvme optimzed, ssd optimized">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon -->
+  <link href="/favicon.ico" rel="shortcut icon"/>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"/>
+  <link rel="stylesheet" href="/assets/css/slicknav.min.css"/>
+  <link rel="stylesheet" href="/assets/css/owl.carousel.min.css"/>
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/style.css"/>
+
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<link rel="stylesheet" href="/assets/css/style-blog.css"/>
+<link rel="stylesheet" href="/assets/css/code-syntax-theme.css"/>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="/assets/js/mermaid/mermaid.min.js"></script>
+<script type="text/javascript">mermaid.initialize({startOnLoad:true});</script>
+<body>
+<!-- Header section  -->
+<header class="header-section clearfix">
+  <!-- <div class="header-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-6 text-md-right">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="site-navbar">
+    <!-- Logo -->
+    <a href="/" class="site-logo">
+      <img src="/assets/img/logo.png" alt="">
+    </a>
+    <div class="header-right">
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-2x fa-envelope icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>lightningdb@sktelecom.com</h6>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-3x fa-map-marker icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>8F, 264, PangyoRo, BundangGu</h6>
+          <p>SeongnamSi, GyeonggiDo, Korea</p>
+        </div>
+      </div>
+    </div>
+    <!-- Menu -->
+    <nav class="site-nav-menu">
+      <ul>
+
+        <li><a href="/">Home</a></li>
+
+        <li><a href="/about">About us</a></li>
+
+        <li><a href="/blog">Blog</a></li>
+
+        <li><a href="https://docs.lightningdb.io" target='_blank'>Docs</a></li>
+
+        <li><a href="/contact">Contact</a></li>
+
+      </ul>
+    </nav>
+
+  </div>
+</header>
+<!-- Header section end  -->
+<!-- Page top section  -->
+<section class="page-top-section set-bg" data-setbg="/assets/img/page-top-bg/blog.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <h2>Blog</h2>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page top section end  -->
+
+<!-- Blog page section -->
+<section class="blog-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 blog-page">
+        <h2>Redis의 Bio thread에서 오류 발생 시 정상 종료되지 않는 이슈</h2>
+        <div class="blog-meta">
+          <i class="fa fa-calendar"></i> <span class="meta-date">July 15, 2020</span>&nbsp;
+          <i class="fa fa-user"></i> <span class="meta-author">Sungho Kim</span>
+        </div>
+        <div class="blog-content">
+<h2 id="bio-thread-of-redis">Bio thread of Redis</h2>
+
+<p>Bio threads는 main thread에서 처리하는 기능 외 특정 목적을 가지고 지속적으로 job을 생성 및 수행하기 위한 thread를 관리하는 기능입니다.</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre><span class="go"> * The design is trivial, we have a structure representing a job to perform
+ * and a different thread and job queue for every job type.
+ * Every thread waits for new jobs in its queue, and process every job
+ * sequentially.
+ *
+ * Jobs of the same type are guaranteed to be processed from the least
+ * recently inserted to the most recently inserted (older jobs processed
+ * first).
+ *
+ * Currently there is no way for the creator of the job to be notified about
+ * the completion of the operation, this will only be added when/if needed.
+</span></pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>현재 Redis에는 아래와 같이 3개의 bio thread를 사용하고 있으며, 목적에 맞게 추가해서 사용할 수 있습니다.</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="go">/* Background job opcodes */
+</span><span class="gp">#</span>define BIO_CLOSE_FILE    0 /<span class="k">*</span> Deferred close<span class="o">(</span>2<span class="o">)</span> syscall. <span class="k">*</span>/
+<span class="gp">#</span>define BIO_AOF_FSYNC     1 /<span class="k">*</span> Deferred AOF fsync. <span class="k">*</span>/
+<span class="gp">#</span>define BIO_LAZY_FREE     2 /<span class="k">*</span> Deferred objects freeing. <span class="k">*</span>/
+<span class="gp">#</span>define BIO_NUM_OPS       3
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>각 thread들은 생성 후 지속적으로 ‘pthread_cond_wait’를 사용하여 수행해야 하는 job을 확인하여 처리를 하고, 수행해야 하는 job이 없으면 대기를 합니다.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+</pre></td><td class="rouge-code"><pre><span class="kt">void</span> <span class="o">*</span><span class="nf">bioProcessBackgroundJobs</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="p">...</span>
+    <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bio_mutex</span><span class="p">[</span><span class="n">type</span><span class="p">]);</span>
+    <span class="p">...</span>
+    <span class="p">...</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">listNode</span> <span class="o">*</span><span class="n">ln</span><span class="p">;</span>
+
+        <span class="cm">/* The loop always starts with the lock hold. */</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">listLength</span><span class="p">(</span><span class="n">bio_jobs</span><span class="p">[</span><span class="n">type</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">pthread_cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bio_newjob_cond</span><span class="p">[</span><span class="n">type</span><span class="p">],</span><span class="o">&amp;</span><span class="n">bio_mutex</span><span class="p">[</span><span class="n">type</span><span class="p">]);</span>
+            <span class="k">continue</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="cm">/* Pop the job from the queue. */</span>
+        <span class="n">ln</span> <span class="o">=</span> <span class="n">listFirst</span><span class="p">(</span><span class="n">bio_jobs</span><span class="p">[</span><span class="n">type</span><span class="p">]);</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">ln</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span>
+        <span class="cm">/* It is now possible to unlock the background system as we know have
+         * a stand alone job structure to process.*/</span>
+        <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bio_mutex</span><span class="p">[</span><span class="n">type</span><span class="p">]);</span>
+
+        <span class="cm">/* Process the job accordingly to its type. */</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="n">BIO_CLOSE_FILE</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">close</span><span class="p">((</span><span class="kt">long</span><span class="p">)</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg1</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="n">BIO_AOF_FSYNC</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">redis_fsync</span><span class="p">((</span><span class="kt">long</span><span class="p">)</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg1</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="n">BIO_LAZY_FREE</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* What we free changes depending on what arguments are set:
+             * arg1 -&gt; free the object at pointer.
+             * arg2 &amp; arg3 -&gt; free two dictionaries (a Redis DB).
+             * only arg3 -&gt; free the skiplist. */</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg1</span><span class="p">)</span>
+                <span class="n">lazyfreeFreeObjectFromBioThread</span><span class="p">(</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg1</span><span class="p">);</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg2</span> <span class="o">&amp;&amp;</span> <span class="n">job</span><span class="o">-&gt;</span><span class="n">arg3</span><span class="p">)</span>
+                <span class="n">lazyfreeFreeDatabaseFromBioThread</span><span class="p">(</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg2</span><span class="p">,</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg3</span><span class="p">);</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg3</span><span class="p">)</span>
+                <span class="n">lazyfreeFreeSlotsMapFromBioThread</span><span class="p">(</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg3</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">serverPanic</span><span class="p">(</span><span class="s">"Wrong job type in bioProcessBackgroundJobs()."</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="p">...</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="issue">Issue</h2>
+
+<p>이 bio thread 중 하나에 오류가 발생하여 특정 기능이 정상적으로 동작하지 못함에도 불구하고 redis-server process 자체는 종료되지 않아 failover가 정상 작동하지 않는 문제가 발생할 수 있습니다.</p>
+
+<p>아래는 AOF_FSYNC 중 강제로 오류를 발생시키는 코드를 추가하여 확인한 것입니다.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+</pre></td><td class="rouge-code"><pre><span class="kt">void</span> <span class="o">*</span><span class="nf">bioProcessBackgroundJobs</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="p">...</span>
+    <span class="n">pthread_mutex_lock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bio_mutex</span><span class="p">[</span><span class="n">type</span><span class="p">]);</span>
+    <span class="p">...</span>
+    <span class="p">...</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">listNode</span> <span class="o">*</span><span class="n">ln</span><span class="p">;</span>
+
+        <span class="cm">/* The loop always starts with the lock hold. */</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">listLength</span><span class="p">(</span><span class="n">bio_jobs</span><span class="p">[</span><span class="n">type</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">pthread_cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bio_newjob_cond</span><span class="p">[</span><span class="n">type</span><span class="p">],</span><span class="o">&amp;</span><span class="n">bio_mutex</span><span class="p">[</span><span class="n">type</span><span class="p">]);</span>
+            <span class="k">continue</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="cm">/* Pop the job from the queue. */</span>
+        <span class="n">ln</span> <span class="o">=</span> <span class="n">listFirst</span><span class="p">(</span><span class="n">bio_jobs</span><span class="p">[</span><span class="n">type</span><span class="p">]);</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">ln</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span>
+        <span class="cm">/* It is now possible to unlock the background system as we know have
+         * a stand alone job structure to process.*/</span>
+        <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bio_mutex</span><span class="p">[</span><span class="n">type</span><span class="p">]);</span>
+
+        <span class="cm">/* Process the job accordingly to its type. */</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="n">BIO_CLOSE_FILE</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">close</span><span class="p">((</span><span class="kt">long</span><span class="p">)</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg1</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="n">BIO_AOF_FSYNC</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">redis_fsync</span><span class="p">((</span><span class="kt">long</span><span class="p">)</span><span class="n">job</span><span class="o">-&gt;</span><span class="n">arg1</span><span class="p">);</span>
+            <span class="n">asset</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>               <span class="c1">// 강제로 오류 발생시킴.</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="n">BIO_LAZY_FREE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">...</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>GDB로 오류 발생 후 상황을 보면 아래와 같습니다.</p>
+
+<p>문제가 된 AOF_FSYNC thread는 종료가 되었지만, main thread와 다른 thread는 정상적으로 동작을 할 수 없음에도 불구하고 계속 살아있으면서 대기하고 있는 것을 알 수 있습니다.</p>
+
+<p>이러한 이유로 정상적으로 failover가 수행되지 않고 있습니다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+</pre></td><td class="rouge-code"><pre><span class="o">(</span>gdb<span class="o">)</span> info threads
+  Id   Target Id         Frame
+  12   Thread 0x7f3dfe1ff700 <span class="o">(</span>LWP 134497<span class="o">)</span> <span class="s2">"rocksdb:bg0"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  11   Thread 0x7f3dfd9fe700 <span class="o">(</span>LWP 134498<span class="o">)</span> <span class="s2">"rocksdb:bg1"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  10   Thread 0x7f3dfd1fd700 <span class="o">(</span>LWP 134501<span class="o">)</span> <span class="s2">"rocksdb:bg2"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  9    Thread 0x7f3dfc5ff700 <span class="o">(</span>LWP 134504<span class="o">)</span> <span class="s2">"rocksdb:bg3"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  8    Thread 0x7f3dfbdfe700 <span class="o">(</span>LWP 134505<span class="o">)</span> <span class="s2">"rocksdb:bg4"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  7    Thread 0x7f3dfb1ff700 <span class="o">(</span>LWP 134506<span class="o">)</span> <span class="s2">"rocksdb:bg5"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  6    Thread 0x7f3df9fff700 <span class="o">(</span>LWP 134507<span class="o">)</span> <span class="s2">"rocksdb:bg0"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  5    Thread 0x7f3df97fe700 <span class="o">(</span>LWP 134508<span class="o">)</span> <span class="s2">"rocksdb:bg1"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  4    Thread 0x7f3df8dfd700 <span class="o">(</span>LWP 134509<span class="o">)</span> <span class="s2">"rocksdb:bg2"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  3    Thread 0x7f3deb71b700 <span class="o">(</span>LWP 134516<span class="o">)</span> <span class="s2">"redis-server"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+  2    Thread 0x7f3deaf1a700 <span class="o">(</span>LWP 134517<span class="o">)</span> <span class="s2">"redis-server"</span> 0x00007f3e061e8a35 <span class="k">in </span>pthread_cond_wait@@GLIBC_2.3.2 <span class="o">()</span> from /lib64/libpthread.so.0
+<span class="k">*</span> 1    Thread 0x7f3e07b569c0 <span class="o">(</span>LWP 134406<span class="o">)</span> <span class="s2">"redis-server"</span> 0x00007f3e05f0deb3 <span class="k">in </span>epoll_wait <span class="o">()</span> from /lib64/libc.so.6
+
+<span class="o">(</span>gdb<span class="o">)</span> t 1
+<span class="o">[</span>Switching to thread 1 <span class="o">(</span>Thread 0x7f3e07b569c0 <span class="o">(</span>LWP 134406<span class="o">))]</span>
+<span class="c">#0  0x00007f3e05f0deb3 in epoll_wait () from /lib64/libc.so.6</span>
+<span class="o">(</span>gdb<span class="o">)</span> bt
+<span class="c">#0  0x00007f3e05f0deb3 in epoll_wait () from /lib64/libc.so.6</span>
+<span class="c">#1  0x000000000043c56e in aeApiPoll (tvp=&lt;optimized out&gt;, eventLoop=&lt;optimized out&gt;) at ae.c:403</span>
+<span class="c">#2  aeProcessEvents (eventLoop=eventLoop@entry=0x7f3e05a2bc40, flags=flags@entry=3) at ae.c:412</span>
+<span class="c">#3  0x000000000043c96b in aeMain (eventLoop=0x7f3e05a2bc40) at ae.c:487</span>
+<span class="c">#4  0x0000000000430a71 in main (argc=&lt;optimized out&gt;, argv=0x7ffd6d0c4fa8) at redis.c:5700</span>
+
+<span class="o">(</span>gdb<span class="o">)</span> t 2
+<span class="o">[</span>Switching to thread 2 <span class="o">(</span>Thread 0x7f3deaf1a700 <span class="o">(</span>LWP 134517<span class="o">))]</span>
+<span class="c">#0  0x00007f3e061e8a35 in pthread_cond_wait@@GLIBC_2.3.2 () from /lib64/libpthread.so.0</span>
+<span class="o">(</span>gdb<span class="o">)</span> bt
+<span class="c">#0  0x00007f3e061e8a35 in pthread_cond_wait@@GLIBC_2.3.2 () from /lib64/libpthread.so.0</span>
+<span class="c">#1  0x0000000000486ec5 in bioProcessBackgroundJobs (arg=&lt;optimized out&gt;) at bio.c:236</span>
+<span class="c">#2  0x00007f3e061e4ea5 in start_thread () from /lib64/libpthread.so.0</span>
+<span class="c">#3  0x00007f3e05f0d8dd in clone () from /lib64/libc.so.6</span>
+
+<span class="o">(</span>gdb<span class="o">)</span> p bio_mutex[0]
+<span class="nv">$1</span> <span class="o">=</span> <span class="o">{</span>__data <span class="o">=</span> <span class="o">{</span>__lock <span class="o">=</span> 2, __count <span class="o">=</span> 0, __owner <span class="o">=</span> 134514, __nusers <span class="o">=</span> 1, __kind <span class="o">=</span> 0, __spins <span class="o">=</span> 0, __elision <span class="o">=</span> 0, __list <span class="o">=</span> <span class="o">{</span>__prev <span class="o">=</span> 0x0, __next <span class="o">=</span> 0x0<span class="o">}}</span>,
+  __size <span class="o">=</span> <span class="s2">"</span><span class="se">\0</span><span class="s2">02</span><span class="se">\0</span><span class="s2">00</span><span class="se">\0</span><span class="s2">00</span><span class="se">\0</span><span class="s2">00</span><span class="se">\0</span><span class="s2">00</span><span class="se">\0</span><span class="s2">00</span><span class="se">\0</span><span class="s2">00</span><span class="se">\0</span><span class="s2">00r</span><span class="se">\r\0</span><span class="s2">02</span><span class="se">\0</span><span class="s2">00</span><span class="se">\0</span><span class="s2">01"</span>, <span class="s1">'\000'</span> &lt;repeats 26 <span class="nb">times</span><span class="o">&gt;</span>, __align <span class="o">=</span> 2<span class="o">}</span>
+<span class="o">(</span>gdb<span class="o">)</span> p bio_mutex[1]
+<span class="nv">$2</span> <span class="o">=</span> <span class="o">{</span>__data <span class="o">=</span> <span class="o">{</span>__lock <span class="o">=</span> 0, __count <span class="o">=</span> 0, __owner <span class="o">=</span> 0, __nusers <span class="o">=</span> 0, __kind <span class="o">=</span> 0, __spins <span class="o">=</span> 0, __elision <span class="o">=</span> 0, __list <span class="o">=</span> <span class="o">{</span>__prev <span class="o">=</span> 0x0, __next <span class="o">=</span> 0x0<span class="o">}}</span>, __size <span class="o">=</span> <span class="s1">'\000'</span> &lt;repeats 39 <span class="nb">times</span><span class="o">&gt;</span>,
+  __align <span class="o">=</span> 0<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="root-cause">Root cause</h2>
+
+<p>오류 발생 시 sigsegvHandler()에서 process 종료를 수행하는데, 이 과정 중에 memtest_test_linux_anonymous_maps()를 통해 process 종료 전 memory crash 여부를 확인하는 부분이 있습니다.</p>
+
+<p>이 memory crash 여부를 확인할 때 false alarm을 방지하기 위해 bio thread들을 정리하는 bioKillTrheads()를 먼저 호출합니다.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+</pre></td><td class="rouge-code"><pre><span class="kt">void</span> <span class="nf">sigsegvHandler</span><span class="p">(</span><span class="kt">int</span> <span class="n">sig</span><span class="p">,</span> <span class="n">siginfo_t</span> <span class="o">*</span><span class="n">info</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">secret</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">...</span>
+
+<span class="cp">#if defined(HAVE_PROC_MAPS)
+</span>    <span class="cm">/* Test memory */</span>
+    <span class="n">serverLogRaw</span><span class="p">(</span><span class="n">LL_WARNING</span><span class="o">|</span><span class="n">LL_RAW</span><span class="p">,</span> <span class="s">"</span><span class="se">\n</span><span class="s">------ FAST MEMORY TEST ------</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">bioKillThreads</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">memtest_test_linux_anonymous_maps</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">serverLogRaw</span><span class="p">(</span><span class="n">LL_WARNING</span><span class="o">|</span><span class="n">LL_RAW</span><span class="p">,</span>
+            <span class="s">"!!! MEMORY ERROR DETECTED! Check your memory ASAP !!!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">serverLogRaw</span><span class="p">(</span><span class="n">LL_WARNING</span><span class="o">|</span><span class="n">LL_RAW</span><span class="p">,</span>
+            <span class="s">"Fast memory test PASSED, however your memory can still be broken. Please run a memory test for several hours if possible.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="cp">#endif
+</span><span class="p">...</span>
+
+    <span class="n">serverLogRaw</span><span class="p">(</span><span class="n">LL_WARNING</span><span class="o">|</span><span class="n">LL_RAW</span><span class="p">,</span>
+<span class="s">"</span><span class="se">\n</span><span class="s">=== REDIS BUG REPORT END. Make sure to include from START to END. ===</span><span class="se">\n\n</span><span class="s">"</span>
+<span class="s">"       Please report the crash by opening an issue on github:</span><span class="se">\n\n</span><span class="s">"</span>
+<span class="s">"           http://github.com/antirez/redis/issues</span><span class="se">\n\n</span><span class="s">"</span>
+<span class="s">"  Suspect RAM error? Use redis-server --test-memory to verify it.</span><span class="se">\n\n</span><span class="s">"</span>
+<span class="p">);</span>
+
+    <span class="cm">/* free(messages); Don't call free() with possibly corrupted memory. */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">daemonize</span> <span class="o">&amp;&amp;</span> <span class="n">server</span><span class="p">.</span><span class="n">supervised</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="n">unlink</span><span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">pidfile</span><span class="p">);</span>
+
+    <span class="cm">/* Make sure we exit with the right signal at the end. So for instance
+     * the core will be dumped if enabled. */</span>
+    <span class="n">sigemptyset</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">act</span><span class="p">.</span><span class="n">sa_mask</span><span class="p">);</span>
+    <span class="n">act</span><span class="p">.</span><span class="n">sa_flags</span> <span class="o">=</span> <span class="n">SA_NODEFER</span> <span class="o">|</span> <span class="n">SA_ONSTACK</span> <span class="o">|</span> <span class="n">SA_RESETHAND</span><span class="p">;</span>
+    <span class="n">act</span><span class="p">.</span><span class="n">sa_handler</span> <span class="o">=</span> <span class="n">SIG_DFL</span><span class="p">;</span>
+    <span class="n">sigaction</span> <span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">act</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">kill</span><span class="p">(</span><span class="n">getpid</span><span class="p">(),</span><span class="n">sig</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>아래 코드를 보면 순차적으로 bio thread들을 종료시키는데, main thread에서 호출한 경우에는 정상적으로 모두 종료시키고 ‘kill(getpid(), sig)’를 호출하여 프로세스를 종료시키지만,</p>
+
+<p>bio thread들 중 하나에서 sigsegvHandler()를 타고 들어온 경우에 이 bioKillThreads()를 호출하면 self thread도 종료시키게 됩니다.</p>
+
+<p>참고로 pthread_cancel()을 사용하면 종료를 요청하게 하여 cancelation point까지는 동작을 수행하게 되는데, 이후 이어서 pthread_join()을 호출함으로써 바로 cancelation point에 도달하고 바로 종료를 하게 된 것입니다.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="rouge-code"><pre><span class="cm">/* Kill the running bio threads in an unclean way. This function should be
+ * used only when it's critical to stop the threads for some reason.
+ * Currently Redis does this only on crash (for instance on SIGSEGV) in order
+ * to perform a fast memory check without other threads messing with memory. */</span>
+<span class="kt">void</span> <span class="nf">bioKillThreads</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">err</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">BIO_NUM_OPS</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">bio_threads</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">pthread_cancel</span><span class="p">(</span><span class="n">bio_threads</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">err</span> <span class="o">=</span> <span class="n">pthread_join</span><span class="p">(</span><span class="n">bio_threads</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="nb">NULL</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">serverLog</span><span class="p">(</span><span class="n">LL_WARNING</span><span class="p">,</span>
+                    <span class="s">"Bio thread for job type #%d can be joined: %s"</span><span class="p">,</span>
+                        <span class="n">j</span><span class="p">,</span> <span class="n">strerror</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">serverLog</span><span class="p">(</span><span class="n">LL_WARNING</span><span class="p">,</span>
+                    <span class="s">"Bio thread for job type #%d terminated"</span><span class="p">,</span><span class="n">j</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>이로 인해 해당 thread는 종료되어 프로세스를 종료시키지는 못하게 된 것입니다.</p>
+
+<h2 id="solution">Solution</h2>
+
+<p>따라서 아래와 같이 main thread가 아닌 경우, self thread는 종료시키지 않도록 수정하여 정상적으로 프로세스가 죽고, failover가 수행되도록 하였습니다.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="cm">/* Kill the running bio threads in an unclean way. This function should be
+ * used only when it's critical to stop the threads for some reason.
+ * Currently Redis does this only on crash (for instance on SIGSEGV) in order
+ * to perform a fast memory check without other threads messing with memory. */</span>
+<span class="kt">void</span> <span class="nf">bioKillThreads</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">err</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+
+    <span class="kt">uint64_t</span> <span class="n">tid</span> <span class="o">=</span> <span class="n">pthread_self</span><span class="p">();</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">REDIS_BIO_NUM_OPS</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">bio_threads</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">tid</span> <span class="o">!=</span> <span class="n">bio_threads</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">pthread_cancel</span><span class="p">(</span><span class="n">bio_threads</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">err</span> <span class="o">=</span> <span class="n">pthread_join</span><span class="p">(</span><span class="n">bio_threads</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="nb">NULL</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">redisLog</span><span class="p">(</span><span class="n">REDIS_WARNING</span><span class="p">,</span>
+                    <span class="s">"Bio thread for job type #%d can be joined: %s"</span><span class="p">,</span>
+                        <span class="n">j</span><span class="p">,</span> <span class="n">strerror</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">redisLog</span><span class="p">(</span><span class="n">REDIS_WARNING</span><span class="p">,</span>
+                    <span class="s">"Bio thread for job type #%d terminated"</span><span class="p">,</span><span class="n">j</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Blog page section end -->
+
+<!-- Call to action section  -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 d-flex align-items-center">
+        <h2>We provide speed and trust to business.</h2>
+      </div>
+      <div class="col-lg-3 text-lg-right" >
+        <a href="/contact" class="site-btn sb-dark">contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Call to action section end  -->
+
+<!-- Footer section -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="footer-widget about-widget">
+          <img src="/assets/img/logo-light.png" alt="">
+          <div class="footer-social">
+            <a target="_blank" href="https://github.com/mnms"><i class="fa fa-github"></i></a>
+            <a target="_blank" href="https://www.youtube.com/channel/UCj0aAcbjw0O-vVIcPMneNSw"><i class="fa fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-7">
+        <div class="footer-widget">
+          <h2 class="fw-title">Contact Us</h2>
+          <div class="footer-info-box">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-2x fa-envelope icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>lightningdb@sktelecom.com</p>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-3x fa-map-marker icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>8F, 264, PangyoRo, BundangGu<br>SeongnamSi, GyeonggiDo, Korea</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-buttom">
+    <div class="container">
+    <div class="row">
+      <div class="col-lg-4 order-2 order-lg-1 p-0">
+        <div class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved <br />This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></div>
+      </div>
+      <div class="col-lg-7 order-1 order-lg-2 p-0">
+        <ul class="footer-menu">
+          
+          <li ><a href="/">Home</a></li>
+          
+          <li ><a href="/about">About us</a></li>
+          
+          <li ><a href="/blog">Blog</a></li>
+          
+          <li ><a href="https://docs.lightningdb.io">Docs</a></li>
+          
+          <li ><a href="/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</footer>
+<!-- Footer section end -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-152587413-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-152587413-2');
+</script>
+
+<!--====== Javascripts & Jquery ======-->
+<script type="text/javascript" src="/assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.slicknav.min.js"></script>
+<script type="text/javascript" src="/assets/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="/assets/js/circle-progress.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<!-- <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

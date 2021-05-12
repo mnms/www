@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Lightning DB - DRAM/SSD optimized Realtime In-memory DBMS</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="LightningDB - DRAM/SSD optimized Realtime In-memory DBMS. It uses customized redis & rocksDB, Apache Spark as well.">
+  <meta name="keywords" content="dbms, realtime, olap, dram optimized, nvme optimzed, ssd optimized">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon -->
+  <link href="/favicon.ico" rel="shortcut icon"/>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"/>
+  <link rel="stylesheet" href="/assets/css/slicknav.min.css"/>
+  <link rel="stylesheet" href="/assets/css/owl.carousel.min.css"/>
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/style.css"/>
+
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<link rel="stylesheet" href="/assets/css/style-blog.css"/>
+<link rel="stylesheet" href="/assets/css/code-syntax-theme.css"/>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="/assets/js/mermaid/mermaid.min.js"></script>
+<script type="text/javascript">mermaid.initialize({startOnLoad:true});</script>
+<body>
+<!-- Header section  -->
+<header class="header-section clearfix">
+  <!-- <div class="header-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-6 text-md-right">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="site-navbar">
+    <!-- Logo -->
+    <a href="/" class="site-logo">
+      <img src="/assets/img/logo.png" alt="">
+    </a>
+    <div class="header-right">
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-2x fa-envelope icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>lightningdb@sktelecom.com</h6>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-3x fa-map-marker icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>8F, 264, PangyoRo, BundangGu</h6>
+          <p>SeongnamSi, GyeonggiDo, Korea</p>
+        </div>
+      </div>
+    </div>
+    <!-- Menu -->
+    <nav class="site-nav-menu">
+      <ul>
+
+        <li><a href="/">Home</a></li>
+
+        <li><a href="/about">About us</a></li>
+
+        <li><a href="/blog">Blog</a></li>
+
+        <li><a href="https://docs.lightningdb.io" target='_blank'>Docs</a></li>
+
+        <li><a href="/contact">Contact</a></li>
+
+      </ul>
+    </nav>
+
+  </div>
+</header>
+<!-- Header section end  -->
+<!-- Page top section  -->
+<section class="page-top-section set-bg" data-setbg="/assets/img/page-top-bg/blog.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <h2>Blog</h2>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page top section end  -->
+
+<!-- Blog page section -->
+<section class="blog-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 blog-page">
+        <h2>Apache Parquet 분석</h2>
+        <div class="blog-meta">
+          <i class="fa fa-calendar"></i> <span class="meta-date">April 13, 2020</span>&nbsp;
+          <i class="fa fa-user"></i> <span class="meta-author">Dooyoung Hwang</span>
+        </div>
+        <div class="blog-content">
+<h2 id="parquet-vs-arrow">Parquet vs. Arrow</h2>
+
+<ul>
+  <li>Parquet : Disk에 저장할 목적의 columnar format
+    <ul>
+      <li>주로 Storage에 파일형태로 저장</li>
+      <li>I/O reduction에 Priority
+        <ul>
+          <li>Projection pushdown : Column pruning</li>
+          <li>Filter pushdown : statistics 기반의 Filtering</li>
+        </ul>
+      </li>
+      <li>대부분 Streaming형태의 Access</li>
+    </ul>
+  </li>
+  <li>Arrow : In-memory용 columnar format
+    <ul>
+      <li>주로 하나의 Query를 처리하는데 사용되는 format</li>
+      <li>CPU throughput에 Priority</li>
+      <li>Streaming Access + Random Access</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="parquet-file-layout">Parquet File Layout</h2>
+
+<p><img src="/assets/blog/2020/04/ApacheParquetReview.png" alt="ApacheParquetReview-Img" /></p>
+
+<ul>
+  <li>
+    <p>Hierarchy : Row group &gt; Column chunk &gt; Page &gt; Header + Data (Repetition &amp; Definition Level, non-null values)</p>
+  </li>
+  <li>병렬화 단위 (Unit of parallelization)
+    <ul>
+      <li>MapReduce - File/Row Group</li>
+      <li>IO - Column chunk</li>
+      <li>Encoding/Compression - Page</li>
+    </ul>
+  </li>
+  <li>
+    <p>파일 구조</p>
+
+    <p><a href="https://github.com/apache/parquet-format/blob/54e6133e887a6ea90501ddd72fff5312b7038a7c/src/main/thrift/parquet.thrift">https://github.com/apache/parquet-format/blob/54e6133e887a6ea90501ddd72fff5312b7038a7c/src/main/thrift/parquet.thrift</a></p>
+  </li>
+</ul>
+
+<p><img src="/assets/blog/2020/04/ApacheParquetReview-1.png" alt="ApacheParquetReview-Img1" /></p>
+
+<ul>
+  <li>Footer : FileMetaData
+    <ul>
+      <li>Schema, Version</li>
+      <li>Row groups Metadata : Column Chunk location</li>
+    </ul>
+  </li>
+  <li>Row group
+    <ul>
+      <li>Horizontal Partitioning of data into rows</li>
+    </ul>
+  </li>
+  <li>Columns Chunks
+    <ul>
+      <li>연속된 Page들로 구성됨</li>
+    </ul>
+  </li>
+  <li>Page
+    <ul>
+      <li>가장 작은 저장 단위
+        <ul>
+          <li>Repetition levels data : List, Set 같은 자료형을 지원하기 위한 데이터</li>
+          <li>Definition levels data : column value 각각의 null, non null 값을 표시</li>
+          <li>Encoded values : non-null column values을 encoding한 데이터</li>
+        </ul>
+      </li>
+      <li>Compression/ Encoding 단위 → Page별로 다른 Encoding Type을 쓸 수 있다</li>
+      <li>Supported Encoding : <a href="https://github.com/apache/parquet-format/blob/master/Encodings.md">https://github.com/apache/parquet-format/blob/master/Encodings.md</a>
+        <ul>
+          <li>Plain Encoding</li>
+          <li>Dictionary Encoding
+            <ul>
+              <li>The dictionary will be stored in a dictionary page per column chunk.
+                <ul>
+                  <li>Dictionary page + Data Page</li>
+                </ul>
+              </li>
+              <li>If the dictionary grows too big, whether in size or number of distinct values, the encoding will fall back to the plain encoding.</li>
+              <li>Dictionary page format: the entries in the dictionary - in dictionary order - using the plain encoding.</li>
+              <li>Data page format: the bit width used to encode the entry ids stored as 1 byte (max bit width = 32), followed by the values encoded using RLE/Bit-Packing Hybrid. (with the given bit width).</li>
+            </ul>
+          </li>
+          <li>Run Length Encoding / Bit-Packing Hybrid
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>      rle-bit-packed-hybrid: &lt;length&gt; &lt;encoded-data&gt;
+      length := length of the &lt;encoded-data&gt; in bytes stored as 4 bytes little endian (unsigned int32)
+      encoded-data := &lt;run&gt;*
+      run := &lt;bit-packed-run&gt; | &lt;rle-run&gt;
+      bit-packed-run := &lt;bit-packed-header&gt; &lt;bit-packed-values&gt;
+      rle-run := &lt;rle-header&gt; &lt;repeated-value&gt;
+</pre></td></tr></tbody></table></code></pre></div>            </div>
+          </li>
+          <li>The bit-packing
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>      dec value: 0   1   2   3   4   5   6   7
+      bit value: 000 001 010 011 100 101 110 111
+      bit label: ABC DEF GHI JKL MNO PQR STU VWX
+
+      bit value: 10001000 11000110 11111010
+      bit label: HIDEFABC RMNOJKLG VWXSTUPQ
+</pre></td></tr></tbody></table></code></pre></div>            </div>
+            <ul>
+              <li>bit-packed-run-len and rle-run-len must be in the range [1, 2^31 - 1].
+This means that a Parquet implementation can always store the run length in a signed 32-bit integer.</li>
+            </ul>
+          </li>
+          <li>etc : Delta Encoding (INT32, INT64), Delta Length Byte Array(Byte Array), Delta String(Byte Array), Byte Stream Split(Float, Double)</li>
+          <li>Source Code : <a href="https://github.com/apache/parquet-mr/tree/master/parquet-column/src/main/java/org/apache/parquet/column/values">https://github.com/apache/parquet-mr/tree/master/parquet-column/src/main/java/org/apache/parquet/column/values</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Recommended Configuration
+    <ul>
+      <li>Row group size : 512MB - 1GB (larger sequential IO)</li>
+      <li>Data page size : 8KB</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="parquet-schema">Parquet Schema</h2>
+
+<ul>
+  <li>Parquet stores nested data structures in a flat columnar format : Dremel paper from Google</li>
+  <li>Schema : describes data structures, Similar to “Protocol buffer(protobuf)”
+    <ul>
+      <li>group fields : Nesting</li>
+      <li>repeated fields : Repetition, List나 Set을 표현</li>
+      <li>required, optional : nullable을 표현
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre>message AddressBook {
+  required string owner;
+  repeated string ownerPhoneNumbers;
+  repeated group contacts {
+    required string name;
+    optional string phoneNumber;
+  }
+}
+</pre></td></tr></tbody></table></code></pre></div>        </div>
+      </li>
+    </ul>
+
+    <p><img src="/assets/blog/2020/04/ApacheParquetReview-2.png" alt="ApacheParquetReview-Img2.png" /></p>
+
+    <p><img src="/assets/blog/2020/04/ApacheParquetReview-3.png" alt="ApacheParquetReview-Img3.png" /></p>
+  </li>
+  <li>Definition levels
+    <ul>
+      <li>Nested schema : field가 처음 null이되는 level을 저장 (from root (0 level) to maximum level of the column)
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre>message ExampleDefinitionLevel {
+  optional group a {
+    optional group b {
+      optional string c;
+    }
+  }
+}
+</pre></td></tr></tbody></table></code></pre></div>        </div>
+        <p><img src="/assets/blog/2020/04/ApacheParquetReview-4.png" alt="ApacheParquetReview-Img4.png" />
+<img src="/assets/blog/2020/04/ApacheParquetReview-5.png" alt="ApacheParquetReview-Img5.png" /></p>
+      </li>
+      <li>Flat schema : Optional field를 null여부에 따라 0, 1 bit로 encoding</li>
+    </ul>
+  </li>
+  <li>Repetition levels
+    <ul>
+      <li>새로운 List가 시작할 때 저장되는 값</li>
+      <li>어느 Level에서 새로운 List를 생성해야 하는 지 Marking하는 정보
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>    message nestedLists {
+    	repeated group level1 {
+    		repeated string level2;
+    	}
+    }
+</pre></td></tr></tbody></table></code></pre></div>        </div>
+        <p><img src="/assets/blog/2020/04/ApacheParquetReview-6.png" alt="ApacheParquetReview-Img6.png" />
+<img src="/assets/blog/2020/04/ApacheParquetReview-7.png" alt="ApacheParquetReview-Img7.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>Flat schema with all fields required : the repetition levels and definition levels are omitted completely</li>
+</ul>
+
+<h2 id="parquet-predicate-pushdown">Parquet Predicate Pushdown</h2>
+
+<ul>
+  <li>Page의 Header에는 Statics정보가 Optional하게 들어가 있고 Predicate Pushdown 후 Filter에 부합하지 않는 Page들을 걸러내는 용도로 사용함
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+</pre></td><td class="rouge-code"><pre>  /** Data page header */
+  struct DataPageHeader {
+    /** Number of values, including NULLs, in this data page. **/
+    1: required i32 num_values
+
+    /** Encoding used for this data page **/
+    2: required Encoding encoding
+
+    /** Encoding used for definition levels **/
+    3: required Encoding definition_level_encoding;
+
+    /** Encoding used for repetition levels **/
+    4: required Encoding repetition_level_encoding;
+
+    /** Optional statistics for the data in this page**/
+    5: optional Statistics statistics;
+  }
+
+  /**
+   * Statistics per row group and per page
+   * All fields are optional.
+   */
+  struct Statistics {
+     /**
+      * DEPRECATED: min and max value of the column. Use min_value and max_value.
+      *
+      * Values are encoded using PLAIN encoding, except that variable-length byte
+      * arrays do not include a length prefix.
+      *
+      * These fields encode min and max values determined by signed comparison
+      * only. New files should use the correct order for a column's logical type
+      * and store the values in the min_value and max_value fields.
+      *
+      * To support older readers, these may be set when the column order is
+      * signed.
+      */
+     1: optional binary max;
+     2: optional binary min;
+     /** count of null value in the column */
+     3: optional i64 null_count;
+     /** count of distinct values occurring */
+     4: optional i64 distinct_count;
+     /**
+      * Min and max values for the column, determined by its ColumnOrder.
+      *
+      * Values are encoded using PLAIN encoding, except that variable-length byte
+      * arrays do not include a length prefix.
+      */
+     5: optional binary max_value;
+     6: optional binary min_value;
+  }
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Statics정보를 활용하지 않은 Naive한 구현</p>
+
+    <p><img src="/assets/blog/2020/04/ApacheParquetReview-8.png" alt="ApacheParquetReview-Img8.png" /></p>
+  </li>
+  <li>
+    <p>Statics정보를 활용한 최적화</p>
+
+    <p><img src="/assets/blog/2020/04/ApacheParquetReview-9.png" alt="ApacheParquetReview-Img9.png" /></p>
+  </li>
+</ul>
+
+<p>(1) Filter Column의  Column Chunk load</p>
+
+<p>(2) Page 별 MIN, MAX Stat 기반으로 Decoding할 Page 선택</p>
+
+<p>(3) Values를 decoding한 후 Filtering으로 Delta vector 도출 (Skipping할 Index)</p>
+
+<p>(4) Column 별 Page Offset Range가 다르므로(Data Size기준으로 Page를 분할하기 때문), B,C,D Column Chunk는 (2)에서 선택된 Delta Vector의 Index와 겹치는 Page들만 Decoding</p>
+
+<p>(5) (3)의 Delta Vector를 B,C,D Page에도 적용해 Filtering</p>
+
+<h2 id="speeding-up-select-query-with-page-indexes">Speeding Up SELECT Query with Page Indexes</h2>
+
+<ul>
+  <li>질의에 사용되는 Column의 Data를 다른 형태로 적재 후 성능 비교
+    <ul>
+      <li>SORTED: generated random data and then sorted the whole data.</li>
+      <li>CLUSTERED_n: generated random data, split it into n-buckets and then sorted each bucket separately. This simulates partially sorted data that occurs in real-life workloads. For example, data sets comprised of timestamps of events.</li>
+      <li>RANDOM: We generated random data and did not apply any sorting.</li>
+    </ul>
+
+    <p><img src="/assets/blog/2020/04/ApacheParquetReview-10.png" alt="ApacheParquetReview-Img10.png" /></p>
+  </li>
+  <li>Page Size 조절
+    <ul>
+      <li>parquet.page.size</li>
+      <li>parquet.page.row.count.limit : 중복이 많은 Column의 경우 Encoding 후 Data Size가 작아서 전체 Data가 한 Page에 들어갈 수 있으므로 page의 row count 제한도 걸 수 있음</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li><a href="https://github.com/apache/parquet-format">https://github.com/apache/parquet-format</a></li>
+  <li><a href="https://github.com/apache/parquet-format/blob/master/Encodings.md">https://github.com/apache/parquet-format/blob/master/Encodings.md</a></li>
+  <li><a href="https://blog.twitter.com/engineering/en_us/a/2013/dremel-made-simple-with-parquet.html">https://blog.twitter.com/engineering/en_us/a/2013/dremel-made-simple-with-parquet.html</a></li>
+  <li><a href="https://www.dremio.com/webinars/columnar-roadmap-apache-parquet-and-arrow/">https://www.dremio.com/webinars/columnar-roadmap-apache-parquet-and-arrow/</a></li>
+  <li><a href="https://www.slideshare.net/Hadoop_Summit/the-columnar-roadmap-apache-parquet-and-apache-arrow-102997214">https://www.slideshare.net/Hadoop_Summit/the-columnar-roadmap-apache-parquet-and-apache-arrow-102997214</a></li>
+  <li><a href="https://blog.cloudera.com/speeding-up-select-queries-with-parquet-page-indexes/">https://blog.cloudera.com/speeding-up-select-queries-with-parquet-page-indexes/</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Blog page section end -->
+
+<!-- Call to action section  -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 d-flex align-items-center">
+        <h2>We provide speed and trust to business.</h2>
+      </div>
+      <div class="col-lg-3 text-lg-right" >
+        <a href="/contact" class="site-btn sb-dark">contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Call to action section end  -->
+
+<!-- Footer section -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="footer-widget about-widget">
+          <img src="/assets/img/logo-light.png" alt="">
+          <div class="footer-social">
+            <a target="_blank" href="https://github.com/mnms"><i class="fa fa-github"></i></a>
+            <a target="_blank" href="https://www.youtube.com/channel/UCj0aAcbjw0O-vVIcPMneNSw"><i class="fa fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-7">
+        <div class="footer-widget">
+          <h2 class="fw-title">Contact Us</h2>
+          <div class="footer-info-box">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-2x fa-envelope icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>lightningdb@sktelecom.com</p>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-3x fa-map-marker icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>8F, 264, PangyoRo, BundangGu<br>SeongnamSi, GyeonggiDo, Korea</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-buttom">
+    <div class="container">
+    <div class="row">
+      <div class="col-lg-4 order-2 order-lg-1 p-0">
+        <div class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved <br />This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></div>
+      </div>
+      <div class="col-lg-7 order-1 order-lg-2 p-0">
+        <ul class="footer-menu">
+          
+          <li ><a href="/">Home</a></li>
+          
+          <li ><a href="/about">About us</a></li>
+          
+          <li ><a href="/blog">Blog</a></li>
+          
+          <li ><a href="https://docs.lightningdb.io">Docs</a></li>
+          
+          <li ><a href="/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</footer>
+<!-- Footer section end -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-152587413-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-152587413-2');
+</script>
+
+<!--====== Javascripts & Jquery ======-->
+<script type="text/javascript" src="/assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.slicknav.min.js"></script>
+<script type="text/javascript" src="/assets/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="/assets/js/circle-progress.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<!-- <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

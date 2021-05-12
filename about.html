@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Lightning DB - DRAM/SSD optimized Realtime In-memory DBMS</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="LightningDB - DRAM/SSD optimized Realtime In-memory DBMS. It uses customized redis & rocksDB, Apache Spark as well.">
+  <meta name="keywords" content="dbms, realtime, olap, dram optimized, nvme optimzed, ssd optimized">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon -->
+  <link href="/favicon.ico" rel="shortcut icon"/>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"/>
+  <link rel="stylesheet" href="/assets/css/slicknav.min.css"/>
+  <link rel="stylesheet" href="/assets/css/owl.carousel.min.css"/>
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/style.css"/>
+
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<!-- Header section  -->
+<header class="header-section clearfix">
+  <!-- <div class="header-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-6 text-md-right">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="site-navbar">
+    <!-- Logo -->
+    <a href="/" class="site-logo">
+      <img src="/assets/img/logo.png" alt="">
+    </a>
+    <div class="header-right">
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-2x fa-envelope icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>lightningdb@sktelecom.com</h6>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-3x fa-map-marker icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>8F, 264, PangyoRo, BundangGu</h6>
+          <p>SeongnamSi, GyeonggiDo, Korea</p>
+        </div>
+      </div>
+    </div>
+    <!-- Menu -->
+    <nav class="site-nav-menu">
+      <ul>
+
+        <li><a href="/">Home</a></li>
+
+        <li class="active"><a href="/about">About us</a></li>
+
+        <li><a href="/blog">Blog</a></li>
+
+        <li><a href="https://docs.lightningdb.io" target='_blank'>Docs</a></li>
+
+        <li><a href="/contact">Contact</a></li>
+
+      </ul>
+    </nav>
+
+  </div>
+</header>
+<!-- Header section end  -->
+
+<!-- Page top section  -->
+<section class="page-top-section set-bg" data-setbg="/assets/img/page-top-bg/about.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <h2>About us</h2>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page top section end  -->
+
+<!-- About section -->
+<!-- <section class="about-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <img class="rounded-corners" src="/assets/img/about.jpg" alt="">
+      </div>
+      <div class="col-lg-6">
+        <div class="about-text">
+          <h2>We provide speed and trust to business.</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est. Nam ornare ipsum ac accumsan auctor. Donec consequat arcu et commodo interdum. Vivamus posuere lorem lacus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est. Nam ornare ipsum ac accumsan auctor.</p>
+          <div class="about-sign">
+            <div class="sign">
+              <img src="/assets/img/sign.png" alt="">
+            </div>
+            <div class="sign-info">
+              <h5>Hongchan Roh</h5>
+              <span>Team Leader</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!-- About section end -->
+
+<!-- Milestones section -->
+<!-- <section class="milestones-section set-bg" data-setbg="/assets/img/milestones-bg.jpg">
+  <div class="container text-white">
+    <div class="row">
+      <div class="col-lg-3 col-sm-6">
+        <div class="milestone">
+          <div class="milestone-icon">
+            <img src="/assets/img/icons/plug.png" alt="">
+          </div>
+          <div class="milestone-text">
+            <span>Clients</span>
+            <h2>725</h2>
+            <p>Nam ornare ipsum </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="milestone">
+          <div class="milestone-icon">
+            <img src="/assets/img/icons/light.png" alt="">
+          </div>
+          <div class="milestone-text">
+            <span>Growth</span>
+            <h2>45%</h2>
+            <p>Nam ornare ipsum </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="milestone">
+          <div class="milestone-icon">
+            <img src="/assets/img/icons/traffic-cone.png" alt="">
+          </div>
+          <div class="milestone-text">
+            <span>Projects</span>
+            <h2>59</h2>
+            <p>Nam ornare ipsum </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="milestone">
+          <div class="milestone-icon">
+            <img src="/assets/img/icons/Software Engineer.png" alt="">
+          </div>
+          <div class="milestone-text">
+            <span>Emploees</span>
+            <h2>138</h2>
+            <p>Nam ornare ipsum </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+<!-- Milestones section end -->
+
+<!-- Team section -->
+<section class="team-section spad">
+  <div class="container">
+    <div class="team-text">
+      <h2>Our Amazing Team</h2>
+      <!-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est. Nam ornare ipsum ac accumsan auctor. Donec consequat arcu et commodo interdum. Vivamus posuere lorem lacus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque orci purus, sodales in est quis, blandit sollicitudin est.</p> -->
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="team-member">
+          <a href="#"><img src="/assets/img/team/hongchan.png" alt="" /></a>
+          <div class="member-info">
+            <h3>Hongchan Roh</h3>
+            <p>Team Leader, Ph.D</p>
+            <a href="https://github.com/hongchanroh"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/hongchan-roh-7a715754/"><i class="fa fa-2x fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="team-member">
+          <a href="#"><img src="/assets/img/team/sungho.png" alt="" /></a>
+          <div class="member-info">
+            <h3>Sungho Kim</h3>
+            <p>Project Manager</p>
+            <a href="https://github.com/runtodream"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/%EC%84%B1%ED%98%B8-%EA%B9%80-531aba53/"><i class="fa fa-2x fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="team-member">
+          <a href="#"><img src="/assets/img/team/dooyoung.png" alt="" /></a>
+          <div class="member-info">
+            <h3>Dooyoung Hwang</h3>
+            <p>Tech. Leader</p>
+            <a href="https://github.com/dooyoung-hwang"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/dooyoung-hwang-05b318100/"><i class="fa fa-2x fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="team-member">
+          <a href="#"><img src="/assets/img/team/soohyun.png" alt="" /></a>
+          <div class="member-info">
+            <h3>Soohyun Park</h3>
+            <p>Software Engineer, Ph.D</p>
+            <a href="https://github.com/ardeness"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/soohyun-park-b43a57a6/"><i class="fa fa-2x fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="team-member">
+          <a href="#"><img src="/assets/img/team/youjun.png" alt="" /></a>
+          <div class="member-info">
+            <h3>YouJun Go</h3>
+            <p>Software Engineer</p>
+            <a href="https://github.com/steviego"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/youjun-go-976503165/?originalSubdomain=kr"><i class="fa fa-2x fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="team-member">
+          <a href="#"><img src="/assets/img/team/moohyeon.png" alt="" /></a>
+          <div class="member-info">
+            <h3>Moohyeon Nam</h3>
+            <p>Software Engineer, Ph.D</p>
+            <a href="https://github.com/moohnam"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/moohyeon-nam-97721711b/"><i class="fa fa-2x fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="team-member">
+          <a href="#"><img src="/assets/img/team/junghwan.png" alt="" /></a>
+          <div class="member-info">
+            <h3>Junghwan Park</h3>
+            <p>Software Engineer</p>
+            <a href="https://github.com/9bow"><i class="fa fa-2x fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/reservepark/"><i class="fa fa-2x fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Team section end -->
+
+<!-- Call to action section  -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 d-flex align-items-center">
+        <h2>We provide speed and trust to business.</h2>
+      </div>
+      <div class="col-lg-3 text-lg-right">
+        <a href="/contact" class="site-btn sb-dark">contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Call to action section end  -->
+
+
+<!-- Footer section -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="footer-widget about-widget">
+          <img src="/assets/img/logo-light.png" alt="">
+          <div class="footer-social">
+            <a target="_blank" href="https://github.com/mnms"><i class="fa fa-github"></i></a>
+            <a target="_blank" href="https://www.youtube.com/channel/UCj0aAcbjw0O-vVIcPMneNSw"><i class="fa fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-7">
+        <div class="footer-widget">
+          <h2 class="fw-title">Contact Us</h2>
+          <div class="footer-info-box">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-2x fa-envelope icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>lightningdb@sktelecom.com</p>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-3x fa-map-marker icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>8F, 264, PangyoRo, BundangGu<br>SeongnamSi, GyeonggiDo, Korea</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-buttom">
+    <div class="container">
+    <div class="row">
+      <div class="col-lg-4 order-2 order-lg-1 p-0">
+        <div class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved <br />This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></div>
+      </div>
+      <div class="col-lg-7 order-1 order-lg-2 p-0">
+        <ul class="footer-menu">
+          
+          <li ><a href="/">Home</a></li>
+          
+          <li class="active"><a href="/about">About us</a></li>
+          
+          <li ><a href="/blog">Blog</a></li>
+          
+          <li ><a href="https://docs.lightningdb.io">Docs</a></li>
+          
+          <li ><a href="/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</footer>
+<!-- Footer section end -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-152587413-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-152587413-2');
+</script>
+
+<!--====== Javascripts & Jquery ======-->
+<script type="text/javascript" src="/assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.slicknav.min.js"></script>
+<script type="text/javascript" src="/assets/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="/assets/js/circle-progress.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+</body>
+</html>

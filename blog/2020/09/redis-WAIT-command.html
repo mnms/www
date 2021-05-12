@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Lightning DB - DRAM/SSD optimized Realtime In-memory DBMS</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="LightningDB - DRAM/SSD optimized Realtime In-memory DBMS. It uses customized redis & rocksDB, Apache Spark as well.">
+  <meta name="keywords" content="dbms, realtime, olap, dram optimized, nvme optimzed, ssd optimized">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon -->
+  <link href="/favicon.ico" rel="shortcut icon"/>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"/>
+  <link rel="stylesheet" href="/assets/css/slicknav.min.css"/>
+  <link rel="stylesheet" href="/assets/css/owl.carousel.min.css"/>
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/style.css"/>
+
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<link rel="stylesheet" href="/assets/css/style-blog.css"/>
+<link rel="stylesheet" href="/assets/css/code-syntax-theme.css"/>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="/assets/js/mermaid/mermaid.min.js"></script>
+<script type="text/javascript">mermaid.initialize({startOnLoad:true});</script>
+<body>
+<!-- Header section  -->
+<header class="header-section clearfix">
+  <!-- <div class="header-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-6 text-md-right">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="site-navbar">
+    <!-- Logo -->
+    <a href="/" class="site-logo">
+      <img src="/assets/img/logo.png" alt="">
+    </a>
+    <div class="header-right">
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-2x fa-envelope icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>lightningdb@sktelecom.com</h6>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-3x fa-map-marker icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>8F, 264, PangyoRo, BundangGu</h6>
+          <p>SeongnamSi, GyeonggiDo, Korea</p>
+        </div>
+      </div>
+    </div>
+    <!-- Menu -->
+    <nav class="site-nav-menu">
+      <ul>
+
+        <li><a href="/">Home</a></li>
+
+        <li><a href="/about">About us</a></li>
+
+        <li><a href="/blog">Blog</a></li>
+
+        <li><a href="https://docs.lightningdb.io" target='_blank'>Docs</a></li>
+
+        <li><a href="/contact">Contact</a></li>
+
+      </ul>
+    </nav>
+
+  </div>
+</header>
+<!-- Header section end  -->
+<!-- Page top section  -->
+<section class="page-top-section set-bg" data-setbg="/assets/img/page-top-bg/blog.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <h2>Blog</h2>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page top section end  -->
+
+<!-- Blog page section -->
+<section class="blog-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 blog-page">
+        <h2>REDIS의 WAIT Command</h2>
+        <div class="blog-meta">
+          <i class="fa fa-calendar"></i> <span class="meta-date">September 09, 2020</span>&nbsp;
+          <i class="fa fa-user"></i> <span class="meta-author">Dooyoung Hwang</span>
+        </div>
+        <div class="blog-content">
+<h2 id="synchronous-vs-asynchronous-replication">Synchronous vs Asynchronous Replication</h2>
+<ul>
+  <li>Synchronous : Write 시 모든 replication으로부터 ACK을 받고 Client에게 OK전송 - latency 문제</li>
+  <li>Asynchronous : Write 시 replication으로부터 ACK을 받기 전에 Client에게 OK전송 - Redis에서 default로 채택하는 방식</li>
+  <li>Asynchronous 방식 채택 시 master와 replica간의 Consistency 문제는 ? WAIT Command를 통해 해결함</li>
+</ul>
+
+<h2 id="example">Example</h2>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre>redis 127.0.0.1:9999&gt; <span class="nb">set </span>foo bar
+OK
+redis 127.0.0.1:9999&gt; incr mycounter
+<span class="o">(</span>integer<span class="o">)</span> 1
+
+<span class="c"># 5개의 Replica로 Write가 Propagate될 때까지 MAX 100ms동안 기다림</span>
+<span class="c"># 현재까지 Write command를 sync완료한 replica의 갯수가 return</span>
+redis 127.0.0.1:9999&gt; <span class="nb">wait </span>5 100
+<span class="o">(</span>integer<span class="o">)</span> 7
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="동작-방식">동작 방식</h2>
+<ul>
+  <li>global offset : replica로 Command를 propagate할 때마다 증가되는 offset</li>
+  <li>replication offset : 모든 replica는 현재까지 처리완료한 offset을 저장하고 있음
+    <ul>
+      <li>매초마다 replica는 replication offset을 master로 전송(ACK)</li>
+    </ul>
+  </li>
+  <li>WAIT command가 호출될 시
+    <ul>
+      <li>REPLCONF GETACK command를 Replica로 propagate함
+        <ul>
+          <li>Replica는 REPLCONF GETACK을 받자마자 현재까지 처리한 Replication offset을 master로 전송(ACK)</li>
+          <li>WAIT command parameter로 전달된 replication 수만큼 ACK을 받자마자 blocking을 풀고 client로 응답 전송</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="client-사용-예시">Client 사용 예시</h2>
+<ul>
+  <li>3개 이상의 Replica가 살아있을 때만 payment_id를 save하는 예제
+      - wait가 3이상 return할 시에만 confirmed를 저장함
+    <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="k">def</span> <span class="nf">save_payment</span><span class="p">(</span><span class="n">payment_id</span><span class="p">)</span>
+      <span class="n">redis</span><span class="p">.</span><span class="n">rpush</span><span class="p">(</span><span class="n">payment_id</span><span class="p">,</span><span class="err">”</span><span class="ow">in</span> <span class="n">progress</span><span class="err">”</span><span class="p">)</span> <span class="c1"># Return false on exception
+</span>      <span class="k">if</span> <span class="n">redis</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="n">then</span>
+          <span class="n">redis</span><span class="p">.</span><span class="n">rpush</span><span class="p">(</span><span class="n">payment_id</span><span class="p">,</span><span class="err">”</span><span class="n">confirmed</span><span class="err">”</span><span class="p">)</span> <span class="c1"># Return false on exception
+</span>          <span class="k">if</span> <span class="n">redis</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="n">then</span>
+              <span class="k">return</span> <span class="n">true</span>
+          <span class="k">else</span>
+              <span class="n">redis</span><span class="p">.</span><span class="n">rpush</span><span class="p">(</span><span class="n">payment_id</span><span class="p">,</span><span class="err">”</span><span class="n">cancelled</span><span class="err">”</span><span class="p">)</span>
+              <span class="k">return</span> <span class="n">false</span>
+          <span class="n">end</span>
+      <span class="k">else</span>
+          <span class="k">return</span> <span class="n">false</span>
+  <span class="n">end</span>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="redis-source-code-in-50-version">REDIS Source code in 5.0 version</h2>
+<ul>
+  <li>waitCommand 구현 부분 (replication.c)</li>
+</ul>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="kt">void</span> <span class="nf">waitCommand</span><span class="p">(</span><span class="n">client</span> <span class="o">*</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">mstime_t</span> <span class="n">timeout</span><span class="p">;</span>
+    <span class="kt">long</span> <span class="n">numreplicas</span><span class="p">,</span> <span class="n">ackreplicas</span><span class="p">;</span>
+    <span class="c1">// offset 변수는 command를 수신한 시점의 global offset이다.</span>
+    <span class="c1">// 결국 replica들의 offset이 이 offset변수만큼 sync되는 걸 기다린다고 보면 된다.</span>
+    <span class="kt">long</span> <span class="kt">long</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">woff</span><span class="p">;</span>
+    <span class="p">...</span>
+    <span class="c1">// global offset만큼 sync된 replica 수가 client에서 질의한 replica수보다 크다면 blocking없이 바로 return한다.</span>
+    <span class="n">ackreplicas</span> <span class="o">=</span> <span class="n">replicationCountAcksByOffset</span><span class="p">(</span><span class="n">c</span><span class="o">-&gt;</span><span class="n">woff</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ackreplicas</span> <span class="o">&gt;=</span> <span class="n">numreplicas</span> <span class="o">||</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">CLIENT_MULTI</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">addReplyLongLong</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">ackreplicas</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">// Blocking된 client list에 추가하고 client block후 replica로부터의 ACK을 기다린다.</span>
+    <span class="n">c</span><span class="o">-&gt;</span><span class="n">bpop</span><span class="p">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span><span class="p">;</span>
+    <span class="n">c</span><span class="o">-&gt;</span><span class="n">bpop</span><span class="p">.</span><span class="n">reploffset</span> <span class="o">=</span> <span class="n">offset</span><span class="p">;</span>
+    <span class="n">c</span><span class="o">-&gt;</span><span class="n">bpop</span><span class="p">.</span><span class="n">numreplicas</span> <span class="o">=</span> <span class="n">numreplicas</span><span class="p">;</span>
+    <span class="n">listAddNodeTail</span><span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">clients_waiting_acks</span><span class="p">,</span><span class="n">c</span><span class="p">);</span>
+    <span class="n">blockClient</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">BLOCKED_WAIT</span><span class="p">);</span>
+    <span class="c1">// REPLCONF GETACK Command를 replica로 보낸다.</span>
+    <span class="c1">// (실제로는 replicationRequestAckFromSlaves에서는 바로 REPLCONF GETACK을 보내진 않고 flag설정 후 다음 event loop에서 전송한다. 이는 WAIT요청이 여러 클라이언트로 부터 동시에 이루어져도 한 event loop내에서는 한번만 REPLCONF GETACK을 보내기 위한 처리로 보여진다.)</span>
+    <span class="n">replicationRequestAckFromSlaves</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ul>
+  <li>Replica의 REPLCONF GETACK 처리 부분 (replication.c)</li>
+</ul>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="kt">void</span> <span class="nf">replconfCommand</span><span class="p">(</span><span class="n">client</span> <span class="o">*</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcasecmp</span><span class="p">(</span><span class="n">c</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">ptr</span><span class="p">,</span><span class="s">"getack"</span><span class="p">))</span> <span class="p">{</span>
+            <span class="c1">// REPLCONF GETACK을 수신한 replica는 즉시 현재 sync offset을 master로 전송한다.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">masterhost</span> <span class="o">&amp;&amp;</span> <span class="n">server</span><span class="p">.</span><span class="n">master</span><span class="p">)</span> <span class="n">replicationSendAck</span><span class="p">();</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">...</span>    
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ul>
+  <li>Client를 unblock하는 부분 (server.c)</li>
+</ul>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="c1">// wait Command의 다음 event loop 시작점에서 호출됨</span>
+<span class="kt">void</span> <span class="nf">beforeSleep</span><span class="p">(</span><span class="k">struct</span> <span class="nc">aeEventLoop</span> <span class="o">*</span><span class="n">eventLoop</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">...</span>
+    <span class="c1">// waitCommand에서 설정한 get_ack_from_slaves flag가 ON일 경우 REPLCONF GETACK을 replica들에게 전송함</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">get_ack_from_slaves</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">robj</span> <span class="o">*</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+
+        <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">createStringObject</span><span class="p">(</span><span class="s">"REPLCONF"</span><span class="p">,</span><span class="mi">8</span><span class="p">);</span>
+        <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">createStringObject</span><span class="p">(</span><span class="s">"GETACK"</span><span class="p">,</span><span class="mi">6</span><span class="p">);</span>
+        <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">createStringObject</span><span class="p">(</span><span class="s">"*"</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span> <span class="cm">/* Not used argument. */</span>
+        <span class="n">replicationFeedSlaves</span><span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">slaves</span><span class="p">,</span> <span class="n">server</span><span class="p">.</span><span class="n">slaveseldb</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+        <span class="n">decrRefCount</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="n">decrRefCount</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="n">decrRefCount</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+        <span class="n">server</span><span class="p">.</span><span class="n">get_ack_from_slaves</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+     <span class="c1">// replica들의 replication offset을 기준으로 WAIT 상태의 client들의 unblock여부를 판단함</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">listLength</span><span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="n">clients_waiting_acks</span><span class="p">))</span>
+        <span class="n">processClientsWaitingReplicas</span><span class="p">();</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Blog page section end -->
+
+<!-- Call to action section  -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 d-flex align-items-center">
+        <h2>We provide speed and trust to business.</h2>
+      </div>
+      <div class="col-lg-3 text-lg-right" >
+        <a href="/contact" class="site-btn sb-dark">contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Call to action section end  -->
+
+<!-- Footer section -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="footer-widget about-widget">
+          <img src="/assets/img/logo-light.png" alt="">
+          <div class="footer-social">
+            <a target="_blank" href="https://github.com/mnms"><i class="fa fa-github"></i></a>
+            <a target="_blank" href="https://www.youtube.com/channel/UCj0aAcbjw0O-vVIcPMneNSw"><i class="fa fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-7">
+        <div class="footer-widget">
+          <h2 class="fw-title">Contact Us</h2>
+          <div class="footer-info-box">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-2x fa-envelope icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>lightningdb@sktelecom.com</p>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-3x fa-map-marker icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>8F, 264, PangyoRo, BundangGu<br>SeongnamSi, GyeonggiDo, Korea</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-buttom">
+    <div class="container">
+    <div class="row">
+      <div class="col-lg-4 order-2 order-lg-1 p-0">
+        <div class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved <br />This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></div>
+      </div>
+      <div class="col-lg-7 order-1 order-lg-2 p-0">
+        <ul class="footer-menu">
+          
+          <li ><a href="/">Home</a></li>
+          
+          <li ><a href="/about">About us</a></li>
+          
+          <li ><a href="/blog">Blog</a></li>
+          
+          <li ><a href="https://docs.lightningdb.io">Docs</a></li>
+          
+          <li ><a href="/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</footer>
+<!-- Footer section end -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-152587413-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-152587413-2');
+</script>
+
+<!--====== Javascripts & Jquery ======-->
+<script type="text/javascript" src="/assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.slicknav.min.js"></script>
+<script type="text/javascript" src="/assets/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="/assets/js/circle-progress.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<!-- <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

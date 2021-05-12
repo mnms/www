@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Lightning DB - DRAM/SSD optimized Realtime In-memory DBMS</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="LightningDB - DRAM/SSD optimized Realtime In-memory DBMS. It uses customized redis & rocksDB, Apache Spark as well.">
+  <meta name="keywords" content="dbms, realtime, olap, dram optimized, nvme optimzed, ssd optimized">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon -->
+  <link href="/favicon.ico" rel="shortcut icon"/>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/assets/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="/assets/css/magnific-popup.css"/>
+  <link rel="stylesheet" href="/assets/css/slicknav.min.css"/>
+  <link rel="stylesheet" href="/assets/css/owl.carousel.min.css"/>
+
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/style.css"/>
+
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<link rel="stylesheet" href="/assets/css/style-blog.css"/>
+<link rel="stylesheet" href="/assets/css/code-syntax-theme.css"/>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="/assets/js/mermaid/mermaid.min.js"></script>
+<script type="text/javascript">mermaid.initialize({startOnLoad:true});</script>
+<body>
+<!-- Header section  -->
+<header class="header-section clearfix">
+  <!-- <div class="header-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-6 text-md-right">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="site-navbar">
+    <!-- Logo -->
+    <a href="/" class="site-logo">
+      <img src="/assets/img/logo.png" alt="">
+    </a>
+    <div class="header-right">
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-2x fa-envelope icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>lightningdb@sktelecom.com</h6>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+      <div class="header-info-box">
+        <div class="hib-icon">
+          <i class="fa fa-3x fa-map-marker icon-colored"></i>
+        </div>
+        <div class="hib-text">
+          <h6>8F, 264, PangyoRo, BundangGu</h6>
+          <p>SeongnamSi, GyeonggiDo, Korea</p>
+        </div>
+      </div>
+    </div>
+    <!-- Menu -->
+    <nav class="site-nav-menu">
+      <ul>
+
+        <li><a href="/">Home</a></li>
+
+        <li><a href="/about">About us</a></li>
+
+        <li><a href="/blog">Blog</a></li>
+
+        <li><a href="https://docs.lightningdb.io" target='_blank'>Docs</a></li>
+
+        <li><a href="/contact">Contact</a></li>
+
+      </ul>
+    </nav>
+
+  </div>
+</header>
+<!-- Header section end  -->
+<!-- Page top section  -->
+<section class="page-top-section set-bg" data-setbg="/assets/img/page-top-bg/blog.jpg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <h2>Blog</h2>
+        <!-- <p></p> -->
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Page top section end  -->
+
+<!-- Blog page section -->
+<section class="blog-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 blog-page">
+        <h2>Apache Arrow 분석</h2>
+        <div class="blog-meta">
+          <i class="fa fa-calendar"></i> <span class="meta-date">July 14, 2020</span>&nbsp;
+          <i class="fa fa-user"></i> <span class="meta-author">Dooyoung Hwang</span>
+        </div>
+        <div class="blog-content">
+<h2 id="apache-arrow의-목적-및-장점">Apache Arrow의 목적 및 장점</h2>
+<ul>
+  <li>Cross language간 호환되는 memory format
+  → No overhead for cross-system communication</li>
+  <li>여러 Project가 동일한 기능을 Share할 수 있다.(ex) Parquet-to-Arrow reader</li>
+  <li>modern CPU에 맞게 디자인된 memory format : maximize CPU throughput</li>
+  <li>Ecosystem : Parquet, Spark, Dask, Data Preview, Dremio, Fletcher, GeoMesa, GOAI, Omnisci, MATLAB, pandas 등등</li>
+</ul>
+
+<h2 id="arrow-columnar-format의-특징">Arrow Columnar Format의 특징</h2>
+<ul>
+  <li>Sequential access(scan)를 위한 Data의 인접성</li>
+  <li>O(1) (constant-time) random access</li>
+  <li>SIMD and vectorization-friendly : Allocate memory on aligned addresses (multiple of 8- or 64-bytes) and pad (overallocate) to a length that is a multiple of 8 or 64 bytes.
+    <ul>
+      <li>Elements in numeric arrays will be guaranteed to be retrieved via aligned access.</li>
+      <li>On some architectures alignment can help limit partially used cache lines.</li>
+      <li>SIMD register width와 matching 시키기 위해서 64 bytes alignment 권장</li>
+    </ul>
+  </li>
+  <li>Relocatable without “pointer swizzling”, allowing for true zero-copy access in shared memory (Pointer swizzling : Pointer를 disk에 쓰기 전에 Reload할 수 있게 Object ID로 전환해서 저장하는 것)</li>
+</ul>
+
+<h2 id="google-flatbuffers">Google FlatBuffers</h2>
+<ul>
+  <li>Apache Arrow는 Cross Lanaguage 간 호환되는 memory format을 지원하기 위해 내부적으로 FlatBuffers 를 사용합니다.</li>
+  <li>FlatBuffers : Cross platform serialization library for C++, C#, C, Go, Java, JavaScript, Lobster, Lua, TypeScript, PHP, Python, and Rust.
+    <ul>
+      <li>Parsing/Unpacking이 불필요 : Direct memory access</li>
+      <li>장점 : ProtoBuf와 유사하지만 FlatBuffers는 Object에 접근하기 전에 Deserialize하지 않아도 되기 때문에 ProtoBuf보다 성능이 뛰어나고 메모리 사용량이 적음</li>
+      <li>단점 : ProtoBuf보다 코드 생성량이 많음</li>
+      <li>Tutorial : <a href="https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html">https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html</a></li>
+      <li>FlatBuffers Schema : IDL file로 정의되고 flatc를 이용 C++, java 등 Source file로 compile된다. Application에서는 Source file을 import해 object를 memory block에서 읽어들이거나 object를 memory block에 쓸 수 있다.
+        <ul>
+          <li>지원되는 type : table(class object), struct, union, vector(denoted with [type]), enum, string, primitive types</li>
+          <li>IDL의 root type : root table for the serialized data.
+            <ul>
+              <li><a href="https://google.github.io/flatbuffers/flatbuffers_guide_writing_schema.html">https://google.github.io/flatbuffers/flatbuffers_guide_writing_schema.html</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Serialization (Object to Binary)
+        <ul>
+          <li>FlatBufferBuilder 이용
+            <ul>
+              <li>FlatBufferBuilder : Serialize된 Memory Buffer를 생성하는 Builder</li>
+              <li>Table(class object) 생성 시 string,vector,table이 Table memory안에 nesting되는 게 아님 → 먼저 string,vector,table 등의 객체를 생성한 후 reference를 참조하는 구조</li>
+              <li>FlatBufferBuilder Finish를 호출하면 Serialized buffer가 생성됨</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Binary to Object : No deserialization
+        <ul>
+          <li>Java : flatc 로 생성한 class에 “getRootAs + Class명” 함수 이용해서 메모리에 바로 접근</li>
+          <li>C++ : flatc 로 생성한 class에 “Get + Class명” 함수 이용해서 메모리에 바로 접근
+            <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="c1">// Java</span>
+<span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="cm">/* the data you just read */</span>
+<span class="n">java</span><span class="o">.</span><span class="na">nio</span><span class="o">.</span><span class="na">ByteBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="n">java</span><span class="o">.</span><span class="na">nio</span><span class="o">.</span><span class="na">ByteBuffer</span><span class="o">.</span><span class="na">wrap</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+<span class="c1">// Get an accessor to the root object inside the buffer.</span>
+<span class="nc">Monster</span> <span class="n">monster</span> <span class="o">=</span> <span class="nc">Monster</span><span class="o">.</span><span class="na">getRootAsMonster</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>
+
+<span class="c1">// C++</span>
+<span class="n">uint8_t</span> <span class="o">*</span><span class="n">buffer_pointer</span> <span class="o">=</span> <span class="cm">/* the data you just read */</span><span class="o">;</span>
+<span class="c1">// Get a pointer to the root object inside the buffer.</span>
+<span class="n">auto</span> <span class="n">monster</span> <span class="o">=</span> <span class="nc">GetMonster</span><span class="o">(</span><span class="n">buffer_pointer</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div>            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="flatbuffers--apache-arrow">FlatBuffers &amp; Apache Arrow</h2>
+<ul>
+  <li>Arrow에 IPC protocol이나 File Structure는 결국 FlatBuffers Schema로 정의된다.
+  <a href="https://github.com/apache/arrow/tree/master/format">https://github.com/apache/arrow/tree/master/format</a></li>
+</ul>
+
+<h2 id="serialization-and-interprocess-communication-ipc">Serialization and Interprocess Communication (IPC)</h2>
+<ul>
+  <li>Sender : Serializing Schema &amp; Record Batches into a stream of binary payloads</li>
+  <li>Receiver : Reconstructing Schema &amp; Record Batches from these payloads without need for memory copying</li>
+  <li>IPC Streaming Format
+    <ul>
+      <li>Schema messages + Record Batch messages</li>
+      <li>Schema에 Dictionary Encoding된 Column이 포함되어 있다면 해당 Column의 DictionaryBatch가 나온 후 Record Batch message가 옴
+        <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="o">&lt;</span><span class="n">SCHEMA</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">DICTIONARY</span> <span class="mi">0</span><span class="o">&gt;</span>
+<span class="p">...</span>
+<span class="o">&lt;</span><span class="n">DICTIONARY</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">RECORD</span> <span class="n">BATCH</span> <span class="mi">0</span><span class="o">&gt;</span>
+<span class="p">...</span>
+<span class="o">&lt;</span><span class="n">DICTIONARY</span> <span class="n">x</span> <span class="n">DELTA</span><span class="o">&gt;</span>
+<span class="p">...</span>
+<span class="o">&lt;</span><span class="n">DICTIONARY</span> <span class="n">y</span> <span class="n">DELTA</span><span class="o">&gt;</span>
+<span class="p">...</span>
+<span class="o">&lt;</span><span class="n">RECORD</span> <span class="n">BATCH</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">EOS</span> <span class="p">[</span><span class="n">optional</span><span class="p">]</span><span class="o">:</span> <span class="mh">0xFFFFFFFF</span> <span class="mh">0x00000000</span><span class="o">&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div>        </div>
+
+        <p><img src="/assets/blog/2020/07/ApacheArrowReview-1.png" alt="ApacheArrowReview-1.png" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>File Format
+    <ul>
+      <li>Body는 Streaming format과 동일</li>
+      <li>Footer영역 : Schema 복사본 포함
+        <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="o">&lt;</span><span class="n">magic</span> <span class="n">number</span> <span class="s">"ARROW1"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">empty</span> <span class="n">padding</span> <span class="n">bytes</span> <span class="p">[</span><span class="n">to</span> <span class="mi">8</span> <span class="n">byte</span> <span class="n">boundary</span><span class="p">]</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">STREAMING</span> <span class="n">FORMAT</span> <span class="n">with</span> <span class="n">EOS</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">FOOTER</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">FOOTER</span> <span class="n">SIZE</span><span class="o">:</span> <span class="n">int32</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">magic</span> <span class="n">number</span> <span class="s">"ARROW1"</span><span class="o">&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="messages">Messages</h2>
+<ul>
+  <li>Protocol of Message
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>  <span class="o">&lt;</span><span class="n">continuation</span><span class="o">:</span> <span class="mh">0xFFFFFFFF</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">metadata_size</span><span class="o">:</span> <span class="n">int32</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">metadata_flatbuffer</span><span class="o">:</span> <span class="n">bytes</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">padding</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">message</span> <span class="n">body</span><span class="o">&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+    <ul>
+      <li>&lt;metadata_flatbuffer&gt;
+        <ul>
+          <li><a href="https://github.com/apache/arrow/blob/master/format/Message.fbs">https://github.com/apache/arrow/blob/master/format/Message.fbs</a></li>
+          <li>Message Version &amp; Type</li>
+        </ul>
+
+        <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="rouge-code"><pre><span class="k">union</span> <span class="n">MessageHeader</span> <span class="p">{</span>
+  <span class="n">Schema</span><span class="p">,</span> <span class="n">DictionaryBatch</span><span class="p">,</span> <span class="n">RecordBatch</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">SparseTensor</span>
+<span class="p">}</span>
+
+<span class="n">table</span> <span class="n">Message</span> <span class="p">{</span>
+  <span class="nl">version:</span> <span class="n">org</span><span class="p">.</span><span class="n">apache</span><span class="p">.</span><span class="n">arrow</span><span class="p">.</span><span class="n">flatbuf</span><span class="p">.</span><span class="n">MetadataVersion</span><span class="p">;</span>
+  <span class="nl">header:</span> <span class="n">MessageHeader</span><span class="p">;</span>
+  <span class="nl">bodyLength:</span> <span class="kt">long</span><span class="p">;</span>
+  <span class="nl">custom_metadata:</span> <span class="p">[</span> <span class="n">KeyValue</span> <span class="p">];</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div>        </div>
+      </li>
+      <li>&lt;padding&gt;
+        <ul>
+          <li>For 8-bytes alignment</li>
+        </ul>
+      </li>
+      <li>&lt;message body&gt;
+        <ul>
+          <li>Schema, RecordBatch, DictionaryBatch의 Serialize된 FlatBuffers binary</li>
+        </ul>
+      </li>
+      <li>The complete serialized message must be a multiple of 8 bytes so that messages can be relocated between streams.</li>
+    </ul>
+  </li>
+  <li>Schema Message
+    <ul>
+      <li><a href="https://github.com/apache/arrow/blob/master/format/Schema.fbs">https://github.com/apache/arrow/blob/master/format/Schema.fbs</a></li>
+      <li>Schema describes the columns in a row batch
+        <ul>
+          <li>Filed의 Array로 구성됨
+            <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="n">table</span> <span class="n">Schema</span> <span class="p">{</span>
+  <span class="nl">endianness:</span> <span class="n">Endianness</span><span class="o">=</span><span class="n">Little</span><span class="p">;</span>
+  <span class="nl">fields:</span> <span class="p">[</span> <span class="n">Field</span> <span class="p">];</span>
+  <span class="c1">// User-defined metadata</span>
+  <span class="nl">custom_metadata:</span> <span class="p">[</span> <span class="n">KeyValue</span> <span class="p">];</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div>            </div>
+          </li>
+          <li>Field :  Name &amp; Type of column in a record batch + children fields of a nested type.
+            <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="rouge-code"><pre><span class="n">table</span> <span class="n">Field</span> <span class="p">{</span>
+  <span class="nl">name:</span> <span class="n">string</span><span class="p">;</span>
+  <span class="nl">nullable:</span> <span class="kt">bool</span><span class="p">;</span>
+  <span class="nl">type:</span> <span class="n">Type</span><span class="p">;</span>
+
+  <span class="c1">/// Present only if the field is dictionary encoded.</span>
+  <span class="nl">dictionary:</span> <span class="n">DictionaryEncoding</span><span class="p">;</span>
+
+  <span class="c1">/// children apply only to nested data types like Struct, List and Union.</span>
+  <span class="nl">children:</span> <span class="p">[</span> <span class="n">Field</span> <span class="p">];</span>
+
+  <span class="c1">/// User-defined metadata</span>
+  <span class="nl">custom_metadata:</span> <span class="p">[</span> <span class="n">KeyValue</span> <span class="p">];</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div>            </div>
+          </li>
+          <li>Type
+            <ul>
+              <li>Arrow에서 지원하는 Logical Data Type</li>
+              <li>Type 각각에 고유한 Memory Layout이 정의되어 있다.</li>
+            </ul>
+
+            <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+</pre></td><td class="rouge-code"><pre><span class="p">...</span>
+<span class="n">table</span> <span class="n">Int</span> <span class="p">{</span>
+  <span class="nl">bitWidth:</span> <span class="kt">int</span><span class="p">;</span> <span class="c1">// restricted to 8, 16, 32, and 64 in v1</span>
+  <span class="nl">is_signed:</span> <span class="kt">bool</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">enum</span> <span class="n">Precision</span><span class="o">:</span><span class="kt">short</span> <span class="p">{</span><span class="n">HALF</span><span class="p">,</span> <span class="n">SINGLE</span><span class="p">,</span> <span class="n">DOUBLE</span><span class="p">}</span>
+
+<span class="n">table</span> <span class="n">FloatingPoint</span> <span class="p">{</span>
+  <span class="nl">precision:</span> <span class="n">Precision</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">...</span>
+
+<span class="k">union</span> <span class="n">Type</span> <span class="p">{</span>
+  <span class="n">Null</span><span class="p">,</span>
+  <span class="n">Int</span><span class="p">,</span>
+  <span class="n">FloatingPoint</span><span class="p">,</span>
+  <span class="n">Binary</span><span class="p">,</span>
+  <span class="n">Utf8</span><span class="p">,</span>
+  <span class="n">Bool</span><span class="p">,</span>
+  <span class="n">Decimal</span><span class="p">,</span>
+  <span class="n">Date</span><span class="p">,</span>
+  <span class="n">Time</span><span class="p">,</span>
+  <span class="n">Timestamp</span><span class="p">,</span>
+  <span class="n">Interval</span><span class="p">,</span>
+  <span class="n">List</span><span class="p">,</span>
+  <span class="n">Struct_</span><span class="p">,</span>
+  <span class="n">Union</span><span class="p">,</span>
+  <span class="n">FixedSizeBinary</span><span class="p">,</span>
+  <span class="n">FixedSizeList</span><span class="p">,</span>
+  <span class="n">Map</span><span class="p">,</span>
+  <span class="n">Duration</span><span class="p">,</span>
+  <span class="n">LargeBinary</span><span class="p">,</span>
+  <span class="n">LargeUtf8</span><span class="p">,</span>
+  <span class="n">LargeList</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div>            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>RecordBatch Message
+    <ul>
+      <li>Row들이 Columnar형식으로  serialize된 data</li>
+      <li>RecordBatch Header
+        <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre></td><td class="rouge-code"><pre><span class="k">struct</span> <span class="nc">FieldNode</span> <span class="p">{</span>
+  <span class="c1">/// The number of value slots in the Arrow array at this level of a nested</span>
+  <span class="c1">/// tree</span>
+  <span class="nl">length:</span> <span class="kt">long</span><span class="p">;</span>
+
+  <span class="c1">/// The number of observed nulls.</span>
+  <span class="nl">null_count:</span> <span class="kt">long</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="nc">Buffer</span> <span class="p">{</span>
+  <span class="c1">/// The relative offset into the shared memory page where the bytes for this</span>
+  <span class="c1">/// buffer starts</span>
+  <span class="nl">offset:</span> <span class="kt">long</span><span class="p">;</span>
+
+  <span class="c1">/// The absolute length (in bytes) of the memory buffer.</span>
+  <span class="nl">length:</span> <span class="kt">long</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">table</span> <span class="n">RecordBatch</span> <span class="p">{</span>
+  <span class="c1">/// number of records / rows. The arrays in the batch should all have this</span>
+  <span class="c1">/// length</span>
+  <span class="nl">length:</span> <span class="kt">long</span><span class="p">;</span>
+
+  <span class="c1">/// Nodes correspond to the pre-ordered flattened logical schema</span>
+  <span class="nl">nodes:</span> <span class="p">[</span><span class="n">FieldNode</span><span class="p">];</span>
+
+  <span class="c1">/// Buffers correspond to the pre-ordered flattened buffer tree</span>
+  <span class="nl">buffers:</span> <span class="p">[</span><span class="n">Buffer</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div>        </div>
+      </li>
+      <li>FieldNode : 각각 field의 length 와 null count.</li>
+      <li>Buffer : Message body의 Buffer의 memory offset과 length</li>
+      <li>RecordBatch Body : end-to-end 8-byte로 align된 memory buffer의 sequence</li>
+      <li>Buffer의 Memory Layout : Column의 Logical Type에 따라서 결정됨
+<img src="/assets/blog/2020/07/ApacheArrowReview-2.png" alt="ApacheArrowReview-2.png" />
+        <ul>
+          <li>Validity bitmaps
+            <ul>
+              <li>null 여부를 bit로 marking하는 Buffer</li>
+              <li>LSB numbering
+                <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="n">bitmap</span>
+<span class="n">j</span> <span class="n">mod</span> <span class="mi">8</span>   <span class="mi">7</span>  <span class="mi">6</span>  <span class="mi">5</span>  <span class="mi">4</span>  <span class="mi">3</span>  <span class="mi">2</span>  <span class="mi">1</span>  <span class="mi">0</span>
+          <span class="mi">0</span>  <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">1</span> 
+</pre></td></tr></tbody></table></code></pre></div>                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Layout Type
+        <ul>
+          <li><a href="https://arrow.apache.org/docs/format/Columnar.html#fixed-size-primitive-layout">https://arrow.apache.org/docs/format/Columnar.html#fixed-size-primitive-layout</a></li>
+          <li>Fixed-size Primitive Layout : validity buffer + data buffer</li>
+          <li>Example Layout
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>Int32 Array
+[1, null, 2, 4, 8]
+</pre></td></tr></tbody></table></code></pre></div>            </div>
+            <ul>
+              <li>Length: 5, Null count: 1</li>
+              <li>
+                <p>Validity bitmap buffer</p>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Byte 0 (validity bitmap)</th>
+                      <th>Bytes 1-63</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>00011101</td>
+                      <td>0 (padding)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </li>
+              <li>
+                <p>Value Buffer</p>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Bytes 0-3</th>
+                      <th>Bytes 4-7</th>
+                      <th>Bytes 8-11</th>
+                      <th>Bytes 12-15</th>
+                      <th>Bytes 16-19</th>
+                      <th>Bytes 20-63</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>unspecified</td>
+                      <td>2</td>
+                      <td>4</td>
+                      <td>8</td>
+                      <td>unspecified</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </li>
+            </ul>
+          </li>
+          <li>Variable-size Binary Layout : validity buffer + offset buffer + data buffer
+            <ul>
+              <li>각각의 value가 0이상의 byte를 가짐</li>
+              <li>Offset Buffer : offset을 저장 → (32bit or 64bit) x (array length + 1)
+                <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="n">slot_position</span> <span class="o">=</span> <span class="n">offsets</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+<span class="n">slot_length</span> <span class="o">=</span> <span class="n">offsets</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">offsets</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>  <span class="c1">// (for 0 &lt;= j &lt; length)</span>
+</pre></td></tr></tbody></table></code></pre></div>                </div>
+              </li>
+            </ul>
+          </li>
+          <li>Nested Types (Struct, List) : data buffer가 없음
+            <ul>
+              <li>Variable-size List Layout</li>
+              <li>Fixed-Size List Layout</li>
+              <li>Struct Layout</li>
+              <li>Union Layout : Dense &amp; Sparse Union</li>
+            </ul>
+          </li>
+          <li>Dictionary-encoded Layout
+            <ul>
+              <li>The values are represented by an array of signed integers representing the index of the value in the dictionary.</li>
+              <li><a href="https://arrow.apache.org/docs/format/Columnar.html#dictionary-encoded-layout">https://arrow.apache.org/docs/format/Columnar.html#dictionary-encoded-layout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>RecordBatch Message Body 예시
+        <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre></td><td class="rouge-code"><pre><span class="nl">col1:</span> <span class="n">Struct</span><span class="o">&lt;</span><span class="n">a</span><span class="o">:</span> <span class="n">Int32</span><span class="p">,</span> <span class="n">b</span><span class="o">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">item</span><span class="o">:</span> <span class="n">Int64</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">c</span><span class="o">:</span> <span class="n">Float64</span><span class="o">&gt;</span>
+<span class="n">col2</span><span class="o">:</span> <span class="n">Utf8</span>
+
+<span class="o">-&gt;</span> <span class="n">After</span> <span class="n">flattened</span> <span class="p">(</span><span class="n">pre</span><span class="o">-</span><span class="n">order</span> <span class="n">traversal</span><span class="p">)</span>
+
+<span class="n">FieldNode</span> <span class="mi">0</span><span class="o">:</span> <span class="n">Struct</span> <span class="n">name</span><span class="o">=</span><span class="err">'</span><span class="n">col1</span><span class="err">'</span>
+<span class="n">FieldNode</span> <span class="mi">1</span><span class="o">:</span> <span class="n">Int32</span> <span class="n">name</span><span class="o">=</span><span class="sc">'a'</span>
+<span class="n">FieldNode</span> <span class="mi">2</span><span class="o">:</span> <span class="n">List</span> <span class="n">name</span><span class="o">=</span><span class="sc">'b'</span>
+<span class="n">FieldNode</span> <span class="mi">3</span><span class="o">:</span> <span class="n">Int64</span> <span class="n">name</span><span class="o">=</span><span class="err">'</span><span class="n">item</span><span class="err">'</span>
+<span class="n">FieldNode</span> <span class="mi">4</span><span class="o">:</span> <span class="n">Float64</span> <span class="n">name</span><span class="o">=</span><span class="sc">'c'</span>
+<span class="n">FieldNode</span> <span class="mi">5</span><span class="o">:</span> <span class="n">Utf8</span> <span class="n">name</span><span class="o">=</span><span class="err">'</span><span class="n">col2</span><span class="err">'</span>
+
+<span class="o">-&gt;</span> <span class="n">Buffers</span>
+<span class="n">buffer</span> <span class="mi">0</span><span class="o">:</span> <span class="n">field</span> <span class="mi">0</span> <span class="n">validity</span>
+<span class="n">buffer</span> <span class="mi">1</span><span class="o">:</span> <span class="n">field</span> <span class="mi">1</span> <span class="n">validity</span>
+<span class="n">buffer</span> <span class="mi">2</span><span class="o">:</span> <span class="n">field</span> <span class="mi">1</span> <span class="n">values</span>
+<span class="n">buffer</span> <span class="mi">3</span><span class="o">:</span> <span class="n">field</span> <span class="mi">2</span> <span class="n">validity</span>
+<span class="n">buffer</span> <span class="mi">4</span><span class="o">:</span> <span class="n">field</span> <span class="mi">2</span> <span class="n">offsets</span>
+<span class="n">buffer</span> <span class="mi">5</span><span class="o">:</span> <span class="n">field</span> <span class="mi">3</span> <span class="n">validity</span>
+<span class="n">buffer</span> <span class="mi">6</span><span class="o">:</span> <span class="n">field</span> <span class="mi">3</span> <span class="n">values</span>
+<span class="n">buffer</span> <span class="mi">7</span><span class="o">:</span> <span class="n">field</span> <span class="mi">4</span> <span class="n">validity</span>
+<span class="n">buffer</span> <span class="mi">8</span><span class="o">:</span> <span class="n">field</span> <span class="mi">4</span> <span class="n">values</span>
+<span class="n">buffer</span> <span class="mi">9</span><span class="o">:</span> <span class="n">field</span> <span class="mi">5</span> <span class="n">validity</span>
+<span class="n">buffer</span> <span class="mi">10</span><span class="o">:</span> <span class="n">field</span> <span class="mi">5</span> <span class="n">offsets</span>
+<span class="n">buffer</span> <span class="mi">11</span><span class="o">:</span> <span class="n">field</span> <span class="mi">5</span> <span class="n">data</span>
+</pre></td></tr></tbody></table></code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li>Dictionary Message
+<a href="https://arrow.apache.org/docs/format/Columnar.html#dictionary-messages">https://arrow.apache.org/docs/format/Columnar.html#dictionary-messages</a></li>
+</ul>
+
+<h2 id="java-implementation-of-deserializing-recordbatch-message">Java Implementation of Deserializing RecordBatch Message</h2>
+<ul>
+  <li>IPC나 File로 교환되는 Class Object</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">arrow</span><span class="o">.</span><span class="na">flatbuf</span>
+<span class="c1">// Generated Sources by flatc</span>
+<span class="c1">// Message의 Header</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Message</span> <span class="kd">extends</span> <span class="nc">Table</span>
+
+<span class="c1">// Message Body, 즉 RecordBatch의 Header  </span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">RecordBatch</span> <span class="kd">extends</span> <span class="nc">Table</span>
+
+<span class="c1">// RecordBatch Header에 포함됨. Column Array의 Meta정보(value count, null count)</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">FieldNode</span> <span class="kd">extends</span> <span class="nc">Struct</span>
+
+<span class="c1">// RecordBatch Header에 포함됨. Column Array의 binary 상 offset</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Buffer</span> <span class="kd">extends</span> <span class="nc">Struct</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Messeage Deserialization</p>
+
+    <p>(1) Message Header를 deserialize &amp; Message body의 binary를 ArrowBuf로 Wrapping</p>
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre></td><td class="rouge-code"><pre>    <span class="c1">// org.apache.arrow.vector.ipc.message.MessageChannelReader</span>
+    <span class="kd">public</span> <span class="nc">MessageResult</span> <span class="nf">readNext</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+      <span class="c1">// Read the flatbuf message and check for end-of-stream</span>
+      <span class="nc">MessageMetadataResult</span> <span class="n">result</span> <span class="o">=</span> <span class="nc">MessageSerializer</span><span class="o">.</span><span class="na">readMessage</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">result</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="nc">Message</span> <span class="n">message</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getMessage</span><span class="o">();</span>
+      <span class="nc">ArrowBuf</span> <span class="n">bodyBuffer</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+      <span class="c1">// Read message body data if defined in message</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">messageHasBody</span><span class="o">())</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">bodyLength</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">result</span><span class="o">.</span><span class="na">getMessageBodyLength</span><span class="o">();</span>
+        <span class="n">bodyBuffer</span> <span class="o">=</span> <span class="nc">MessageSerializer</span><span class="o">.</span><span class="na">readMessageBody</span><span class="o">(</span><span class="n">in</span><span class="o">,</span> <span class="n">bodyLength</span><span class="o">,</span> <span class="n">allocator</span><span class="o">);</span>
+      <span class="o">}</span>
+
+      <span class="k">return</span> <span class="k">new</span> <span class="nf">MessageResult</span><span class="o">(</span><span class="n">message</span><span class="o">,</span> <span class="n">bodyBuffer</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// org.apache.arrow.vector.ipc.message.MessageSerializer</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">ArrowBuf</span> <span class="nf">readMessageBody</span><span class="o">(</span><span class="nc">ReadChannel</span> <span class="n">in</span><span class="o">,</span> <span class="kt">long</span> <span class="n">bodyLength</span><span class="o">,</span>
+        <span class="nc">BufferAllocator</span> <span class="n">allocator</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+      <span class="nc">ArrowBuf</span> <span class="n">bodyBuffer</span> <span class="o">=</span> <span class="n">allocator</span><span class="o">.</span><span class="na">buffer</span><span class="o">(</span><span class="n">bodyLength</span><span class="o">);</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">in</span><span class="o">.</span><span class="na">readFully</span><span class="o">(</span><span class="n">bodyBuffer</span><span class="o">,</span> <span class="n">bodyLength</span><span class="o">)</span> <span class="o">!=</span> <span class="n">bodyLength</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IOException</span><span class="o">(</span><span class="s">"Unexpected end of input trying to read batch."</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="k">return</span> <span class="n">bodyBuffer</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+    <p>(2) Message Header가 RecordBatch인지 확인 후 Message Body binary를 RecordBatch로 Deserialize</p>
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+</pre></td><td class="rouge-code"><pre>    <span class="c1">// org.apache.arrow.vector.ipc.ArrowStreamReader</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">loadNextBatch</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+      <span class="n">prepareLoadNextBatch</span><span class="o">();</span>
+      <span class="nc">MessageResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">messageReader</span><span class="o">.</span><span class="na">readNext</span><span class="o">();</span>
+
+      <span class="c1">// Reached EOS</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">result</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+      <span class="o">}</span>
+
+      <span class="k">if</span> <span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">getMessage</span><span class="o">().</span><span class="na">headerType</span><span class="o">()</span> <span class="o">==</span> <span class="nc">MessageHeader</span><span class="o">.</span><span class="na">RecordBatch</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">ArrowBuf</span> <span class="n">bodyBuffer</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getBodyBuffer</span><span class="o">();</span>
+
+        <span class="c1">// For zero-length batches, need an empty buffer to deserialize the batch</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">bodyBuffer</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">bodyBuffer</span> <span class="o">=</span> <span class="n">allocator</span><span class="o">.</span><span class="na">getEmpty</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="nc">ArrowRecordBatch</span> <span class="n">batch</span> <span class="o">=</span> <span class="nc">MessageSerializer</span><span class="o">.</span><span class="na">deserializeRecordBatch</span><span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">bodyBuffer</span><span class="o">);</span>
+        <span class="n">loadRecordBatch</span><span class="o">(</span><span class="n">batch</span><span class="o">);</span>
+        <span class="n">checkDictionaries</span><span class="o">();</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">getMessage</span><span class="o">().</span><span class="na">headerType</span><span class="o">()</span> <span class="o">==</span> <span class="nc">MessageHeader</span><span class="o">.</span><span class="na">DictionaryBatch</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// if it's dictionary message, read dictionary message out and continue to read unless get a batch or eos.</span>
+        <span class="nc">ArrowDictionaryBatch</span> <span class="n">dictionaryBatch</span> <span class="o">=</span> <span class="n">readDictionary</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+        <span class="n">loadDictionary</span><span class="o">(</span><span class="n">dictionaryBatch</span><span class="o">);</span>
+        <span class="n">loadedDictionaryCount</span><span class="o">++;</span>
+        <span class="k">return</span> <span class="nf">loadNextBatch</span><span class="o">();</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IOException</span><span class="o">(</span><span class="s">"Expected RecordBatch or DictionaryBatch but header was "</span> <span class="o">+</span>
+            <span class="n">result</span><span class="o">.</span><span class="na">getMessage</span><span class="o">().</span><span class="na">headerType</span><span class="o">());</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+    <p>(3) Message Body에서 RecordBatch Header 생성 후 및 RecordBatch의 body를 Column별로 binary를 Slice한 후 ArrowRecordBatch object로 wrapping
+   → 결국 ArrowRecordBatch object는 Column chunk binary List를 가지게 된다.</p>
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+</pre></td><td class="rouge-code"><pre>    <span class="c1">// org.apache.arrow.vector.ipc.message.MessageSerializer</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">ArrowRecordBatch</span> <span class="nf">deserializeRecordBatch</span><span class="o">(</span><span class="nc">Message</span> <span class="n">recordBatchMessage</span><span class="o">,</span> <span class="nc">ArrowBuf</span> <span class="n">bodyBuffer</span><span class="o">)</span>
+        <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+      <span class="nc">RecordBatch</span> <span class="n">recordBatchFB</span> <span class="o">=</span> <span class="o">(</span><span class="nc">RecordBatch</span><span class="o">)</span> <span class="n">recordBatchMessage</span><span class="o">.</span><span class="na">header</span><span class="o">(</span><span class="k">new</span> <span class="nc">RecordBatch</span><span class="o">());</span>
+      <span class="k">return</span> <span class="nf">deserializeRecordBatch</span><span class="o">(</span><span class="n">recordBatchFB</span><span class="o">,</span> <span class="n">bodyBuffer</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">ArrowRecordBatch</span> <span class="nf">deserializeRecordBatch</span><span class="o">(</span><span class="nc">RecordBatch</span> <span class="n">recordBatchFB</span><span class="o">,</span> <span class="nc">ArrowBuf</span> <span class="n">body</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+      <span class="c1">// Now read the body</span>
+      <span class="kt">int</span> <span class="n">nodesLength</span> <span class="o">=</span> <span class="n">recordBatchFB</span><span class="o">.</span><span class="na">nodesLength</span><span class="o">();</span>
+      <span class="nc">List</span><span class="o">&lt;</span><span class="nc">ArrowFieldNode</span><span class="o">&gt;</span> <span class="n">nodes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nodesLength</span><span class="o">;</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">FieldNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">recordBatchFB</span><span class="o">.</span><span class="na">nodes</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">((</span><span class="kt">int</span><span class="o">)</span> <span class="n">node</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">!=</span> <span class="n">node</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">||</span>
+            <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">node</span><span class="o">.</span><span class="na">nullCount</span><span class="o">()</span> <span class="o">!=</span> <span class="n">node</span><span class="o">.</span><span class="na">nullCount</span><span class="o">())</span> <span class="o">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nf">IOException</span><span class="o">(</span><span class="s">"Cannot currently deserialize record batches with "</span> <span class="o">+</span>
+                                <span class="s">"node length larger than INT_MAX records."</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">ArrowFieldNode</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">length</span><span class="o">(),</span> <span class="n">node</span><span class="o">.</span><span class="na">nullCount</span><span class="o">()));</span>
+      <span class="o">}</span>
+      <span class="nc">List</span><span class="o">&lt;</span><span class="nc">ArrowBuf</span><span class="o">&gt;</span> <span class="n">buffers</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+      <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">recordBatchFB</span><span class="o">.</span><span class="na">buffersLength</span><span class="o">();</span> <span class="o">++</span><span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Buffer</span> <span class="n">bufferFB</span> <span class="o">=</span> <span class="n">recordBatchFB</span><span class="o">.</span><span class="na">buffers</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+        <span class="nc">ArrowBuf</span> <span class="n">vectorBuffer</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="na">slice</span><span class="o">(</span><span class="n">bufferFB</span><span class="o">.</span><span class="na">offset</span><span class="o">(),</span> <span class="n">bufferFB</span><span class="o">.</span><span class="na">length</span><span class="o">());</span>
+        <span class="n">buffers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">vectorBuffer</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="k">if</span> <span class="o">((</span><span class="kt">int</span><span class="o">)</span> <span class="n">recordBatchFB</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">!=</span> <span class="n">recordBatchFB</span><span class="o">.</span><span class="na">length</span><span class="o">())</span> <span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IOException</span><span class="o">(</span><span class="s">"Cannot currently deserialize record batches with more than INT_MAX records."</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="nc">ArrowRecordBatch</span> <span class="n">arrowRecordBatch</span> <span class="o">=</span>
+          <span class="k">new</span> <span class="nf">ArrowRecordBatch</span><span class="o">(</span><span class="n">checkedCastToInt</span><span class="o">(</span><span class="n">recordBatchFB</span><span class="o">.</span><span class="na">length</span><span class="o">()),</span> <span class="n">nodes</span><span class="o">,</span> <span class="n">buffers</span><span class="o">);</span>
+      <span class="n">body</span><span class="o">.</span><span class="na">getReferenceManager</span><span class="o">().</span><span class="na">release</span><span class="o">();</span>
+      <span class="k">return</span> <span class="n">arrowRecordBatch</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="conversion-between-parquet--arrow">Conversion Between Parquet &amp; Arrow</h2>
+<ul>
+  <li>Representation of Flat schema<br />
+  Arrow의 경우 Parquet과 달리 null value도 memory를 차지 함
+  <img src="/assets/blog/2020/07/ApacheArrowReview-3.png" alt="ApacheArrowReview-3.png" /></li>
+  <li>Naive Conversion (Parquet → Arrow)
+  Definition Level을 if 문으로 체크할 경우 CPU Instruction pipeline에 Data dependent할 branch가 발생해 loop 수행 성능이 저하됨
+  <img src="/assets/blog/2020/07/ApacheArrowReview-4.png" alt="ApacheArrowReview-4.png" /></li>
+  <li>CPU Pipeline
+    <ul>
+      <li>CPU Instruction하나를 여러 step으로 나눠서 병렬 처리함</li>
+      <li>Data에 dependent한 instruction(if문 같은 branch)은 해당 Data가 evaluation될 때까지 waiting하거나 값을 예측해서 미리 instruction실행</li>
+      <li>예측이 틀릴 시 이전 instruction으로 되돌아가 다시 실행 → Bubble
+  <img src="/assets/blog/2020/07/ApacheArrowReview-5.png" alt="ApacheArrowReview-5.png" /></li>
+    </ul>
+  </li>
+  <li>Implementation without branch
+<img src="/assets/blog/2020/07/ApacheArrowReview-6.png" alt="ApacheArrowReview-6.png" /></li>
+</ul>
+
+<h2 id="spark-integration-spark-13534">Spark Integration (SPARK-13534)</h2>
+<ul>
+  <li>Arrow를 이용해 Pandas DataFrame과 Spark DataFrame의 Conversion Overhead를 줄인 패치</li>
+  <li>PySpark 에서 toPandas 호출
+  → JVM Spark DataFrame의 collectAsArrow 호출 : 내부적으로 Spark Array[Row]를 Arrow File의 Payload로 전환해 Return함
+  → PySpark은 Arrow File의 Payload를 받아서 Python tuple형태로 Deserialize하지 않고 Pandas DataFrame으로 바로 전환</li>
+  <li>JIRA : <a href="https://issues.apache.org/jira/browse/SPARK-13534">https://issues.apache.org/jira/browse/SPARK-13534</a></li>
+  <li>PR : <a href="https://issues.apache.org/jira/browse/SPARK-13534">https://issues.apache.org/jira/browse/SPARK-13534</a></li>
+</ul>
+
+<h2 id="reference">Reference</h2>
+<ul>
+  <li>Apache Arrow Columnar Format
+  <a href="https://arrow.apache.org/docs/format/Columnar.html#">https://arrow.apache.org/docs/format/Columnar.html#</a></li>
+  <li>Conversion between Arrow &amp; Parquet
+  <a href="https://youtu.be/dPb2ZXnt2_U">https://youtu.be/dPb2ZXnt2_U</a>
+  <a href="https://www.slideshare.net/Hadoop_Summit/the-columnar-roadmap-apache-parquet-and-apache-arrow-102997214">https://www.slideshare.net/Hadoop_Summit/the-columnar-roadmap-apache-parquet-and-apache-arrow-102997214</a></li>
+  <li>Apache Arrow github
+  <a href="https://github.com/apache/arrow">https://github.com/apache/arrow</a></li>
+  <li>FlatBuffers Tutorial
+  <a href="https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html">https://google.github.io/flatbuffers/flatbuffers_guide_tutorial.html</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Blog page section end -->
+
+<!-- Call to action section  -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-9 d-flex align-items-center">
+        <h2>We provide speed and trust to business.</h2>
+      </div>
+      <div class="col-lg-3 text-lg-right" >
+        <a href="/contact" class="site-btn sb-dark">contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Call to action section end  -->
+
+<!-- Footer section -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6">
+        <div class="footer-widget about-widget">
+          <img src="/assets/img/logo-light.png" alt="">
+          <div class="footer-social">
+            <a target="_blank" href="https://github.com/mnms"><i class="fa fa-github"></i></a>
+            <a target="_blank" href="https://www.youtube.com/channel/UCj0aAcbjw0O-vVIcPMneNSw"><i class="fa fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-7">
+        <div class="footer-widget">
+          <h2 class="fw-title">Contact Us</h2>
+          <div class="footer-info-box">
+            <div class="row">
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-2x fa-envelope icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>lightningdb@sktelecom.com</p>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6">
+                <div class="fib-icon">
+                  <i class="fa fa-3x fa-map-marker icon-colored"></i>
+                </div>
+                <div class="fib-text">
+                  <p>8F, 264, PangyoRo, BundangGu<br>SeongnamSi, GyeonggiDo, Korea</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-buttom">
+    <div class="container">
+    <div class="row">
+      <div class="col-lg-4 order-2 order-lg-1 p-0">
+        <div class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved <br />This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></div>
+      </div>
+      <div class="col-lg-7 order-1 order-lg-2 p-0">
+        <ul class="footer-menu">
+          
+          <li ><a href="/">Home</a></li>
+          
+          <li ><a href="/about">About us</a></li>
+          
+          <li ><a href="/blog">Blog</a></li>
+          
+          <li ><a href="https://docs.lightningdb.io">Docs</a></li>
+          
+          <li ><a href="/contact">Contact</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+</footer>
+<!-- Footer section end -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-152587413-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-152587413-2');
+</script>
+
+<!--====== Javascripts & Jquery ======-->
+<script type="text/javascript" src="/assets/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.slicknav.min.js"></script>
+<script type="text/javascript" src="/assets/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="/assets/js/circle-progress.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.magnific-popup.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<!-- <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>
